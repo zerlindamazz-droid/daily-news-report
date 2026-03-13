@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日全球要闻快报 — {{ date_str }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0d0d1a; --card:  #14142a; --card2:  #1c1c38;
+    --border:  #2a2a50; --accent:#f0a500; --accent2:#ffd166;
+    --blue:    #3d86f5; --text:  #e2e2f0; --muted:  #8888aa;
+    --green:   #00e676; --red:   #ff5252;
+    --badge-gl:#8c1a1a; --badge-ai:#6c3dbd; --badge-cr:#1a6fbd; --badge-ec:#1a8c5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans SC','Microsoft YaHei','Inter','PingFang SC',sans-serif;
+    background: var(--bg); color: var(--text);
+    font-size: 14px; line-height: 1.7;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── LANG TOGGLE ─────────────────────────────── */
+  .lang-toggle {
+    position: fixed; top: 16px; right: 20px; z-index: 999;
+    display: flex; gap: 4px;
+  }
+  .lang-toggle button {
+    background: var(--card2); border: 1px solid var(--border);
+    color: var(--muted); font-size: 12px; font-weight: 700;
+    padding: 5px 13px; border-radius: 20px; cursor: pointer;
+    letter-spacing: 0.5px; transition: all .2s;
+  }
+  .lang-toggle button.active {
+    background: var(--accent); border-color: var(--accent);
+    color: #000;
+  }
+  @media print { .lang-toggle { display: none; } }
+
+  /* ── HEADER ──────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg,#0a0a1e 0%,#1a1040 60%,#0e0e28 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 32px 0 24px; text-align: center;
+  }
+  .header-logo { font-size:11px; letter-spacing:4px; color:var(--accent); margin-bottom:10px; }
+  .header-title { font-size:28px; font-weight:700; color:#fff; letter-spacing:1px; }
+  .header-title .accent { color: var(--accent); }
+  .header-meta { margin-top:10px; font-size:13px; color:var(--muted); letter-spacing:1px; }
+  .header-meta strong { color: var(--accent2); }
+
+  /* ── LAYOUT ──────────────────────────────────── */
+  .container { max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  /* ── KEY POINTS ──────────────────────────────── */
+  .keypoints {
+    background:var(--card); border:1px solid var(--accent);
+    border-radius:10px; margin:28px 0 0; padding:20px 28px;
+  }
+  .keypoints-title { color:var(--accent); font-size:13px; letter-spacing:2px; font-weight:700; margin-bottom:12px; }
+  .keypoints ul { padding-left:20px; }
+  .keypoints li { margin-bottom:6px; font-size:13.5px; }
+
+  /* ── SECTION ──────────────────────────────────── */
+  .section { margin-top:36px; }
+  .section-header {
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:18px; padding-bottom:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .section-icon { font-size:22px; }
+  .section-title { font-size:20px; font-weight:700; color:#fff; }
+  .section-count { margin-left:auto; font-size:11px; color:var(--muted); background:var(--card2); padding:2px 10px; border-radius:20px; }
+
+  /* ── ARTICLE CARD ─────────────────────────────── */
+  .article-card {
+    display:flex; gap:18px;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:10px; padding:16px 18px; margin-bottom:14px;
+    page-break-inside:avoid;
+  }
+  .article-img-wrap { flex:0 0 160px; height:108px; border-radius:7px; overflow:hidden; background:var(--card2); }
+  .article-img-wrap img { width:100%; height:100%; object-fit:cover; display:block; }
+  .article-body { flex:1; min-width:0; }
+  .article-meta { display:flex; align-items:center; gap:8px; margin-bottom:7px; flex-wrap:wrap; }
+  .badge {
+    font-size:10px; font-weight:700; letter-spacing:.5px;
+    padding:2px 9px; border-radius:20px; color:#fff;
+  }
+  .badge-world  { background: var(--badge-gl); }
+  .badge-ai     { background: var(--badge-ai); }
+  .badge-crypto { background: var(--badge-cr); }
+  .badge-economy{ background: var(--badge-ec); }
+  .article-date  { font-size:11px; color:var(--muted); }
+  .article-title { font-size:15px; font-weight:600; color:#fff; margin-bottom:7px; line-height:1.45; }
+  .article-summary { font-size:13px; color:var(--muted); margin-bottom:10px; }
+  .read-more { font-size:12px; color:var(--accent); font-weight:500; }
+
+  /* ── CRYPTO GRID ──────────────────────────────── */
+  .crypto-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:22px; }
+  .crypto-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px; text-align:center; }
+  .crypto-symbol { font-size:16px; font-weight:700; color:var(--accent); }
+  .crypto-name   { font-size:11px; color:var(--muted); margin:2px 0 8px; }
+  .crypto-price  { font-size:14px; font-weight:600; color:#fff; margin-bottom:5px; }
+  .crypto-change { font-size:13px; font-weight:700; }
+  .crypto-mcap   { font-size:10px; color:var(--muted); margin-top:5px; }
+  .positive { color: var(--green); }
+  .negative { color: var(--red);   }
+
+  /* ── MARKET TABLE ─────────────────────────────── */
+  .market-table { width:100%; border-collapse:collapse; margin-bottom:22px; font-size:13px; }
+  .market-table th { background:var(--card2); color:var(--accent); font-weight:600; padding:10px 14px; text-align:left; font-size:12px; letter-spacing:.5px; }
+  .market-table td { padding:9px 14px; border-bottom:1px solid var(--border); color:var(--text); }
+  .market-table tr:last-child td { border-bottom:none; }
+  .market-table tr:nth-child(even) td { background:#12122299; }
+  .market-table .val { font-weight:600; font-variant-numeric:tabular-nums; }
+
+  /* ── CHART ────────────────────────────────────── */
+  .chart-wrap { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:6px; margin-bottom:22px; overflow:hidden; }
+  .chart-wrap img { width:100%; display:block; border-radius:7px; }
+
+  /* ── DIVIDER ──────────────────────────────────── */
+  .divider { border:none; border-top:1px solid var(--border); margin:30px 0; }
+
+  /* ── FOOTER ───────────────────────────────────── */
+  .footer { background:var(--card); border-top:1px solid var(--border); text-align:center; padding:22px; margin-top:40px; color:var(--muted); font-size:12px; }
+  .footer strong { color: var(--accent); }
+
+  @media print {
+    .article-card, .crypto-card, .keypoints { break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── 语言切换按钮 ─────────────────────────────────────────────────────────── -->
+<div class="lang-toggle">
+  <button id="btn-zh" class="active" onclick="setLang('zh')">中文</button>
+  <button id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- ── HEADER ──────────────────────────────────────────────────────────────── -->
+<div class="header">
+  <div class="header-logo" data-zh="每日全球要闻快报" data-en="Daily Global Intelligence Report">每日全球要闻快报</div>
+  <div class="header-title">
+    <span data-zh="每日全球" data-en="Daily Global ">每日全球</span><span class="accent" data-zh="要闻" data-en="News">要闻</span><span data-zh="快报" data-en=" Digest">快报</span>
+  </div>
+  <div class="header-meta">
+    <strong>{{ date_str }}</strong>
+    <span class="date-en" style="display:none"><strong>{{ date_str_en }}</strong></span>
+    &nbsp;·&nbsp;
+    <span data-zh="洛杉矶时间" data-en="Los Angeles">洛杉矶时间</span>
+    <strong>{{ la_time }}</strong>
+    <span data-zh=" 发布" data-en=" Published"> 发布</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ── 今日要点 ──────────────────────────────────────────────────────────── -->
+  <div class="keypoints">
+    <div class="keypoints-title" data-zh="◆ 今日要点速览" data-en="◆ Today's Key Highlights">◆ 今日要点速览</div>
+    <ul>
+      {% for point in key_points %}
+      <li data-zh="{{ point.zh }}" data-en="{{ point.en }}">{{ point.zh }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- ── 全球重大事件 ──────────────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🌐</span>
+      <span class="section-title" data-zh="全球重大事件" data-en="Major World Events">全球重大事件</span>
+      <span class="section-count">{{ world_news|length }}<span data-zh=" 条" data-en=" items"> 条</span></span>
+    </div>
+    {% for article in world_news %}
+    <div class="article-card">
+      {% if article.image %}
+      <div class="article-img-wrap">
+        <img src="{{ article.image }}" alt="" onerror="this.parentElement.style.display='none'">
+      </div>
+      {% endif %}
+      <div class="article-body">
+        <div class="article-meta">
+          <span class="badge badge-world" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
+          {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
+        </div>
+        <div class="article-title">{{ article.title }}</div>
+        {% if article.summary_zh or article.summary_en %}<div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>{% endif %}
+        <a href="{{ article.link }}" class="read-more" target="_blank">
+          <span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── AI 与科技 ─────────────────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🤖</span>
+      <span class="section-title" data-zh="AI 与科技动态" data-en="AI & Technology">AI 与科技动态</span>
+      <span class="section-count">{{ ai_news|length }}<span data-zh=" 条" data-en=" items"> 条</span></span>
+    </div>
+    {% for article in ai_news %}
+    <div class="article-card">
+      {% if article.image %}
+      <div class="article-img-wrap">
+        <img src="{{ article.image }}" alt="" onerror="this.parentElement.style.display='none'">
+      </div>
+      {% endif %}
+      <div class="article-body">
+        <div class="article-meta">
+          <span class="badge badge-ai" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
+          {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
+        </div>
+        <div class="article-title">{{ article.title }}</div>
+        {% if article.summary_zh or article.summary_en %}<div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>{% endif %}
+        <a href="{{ article.link }}" class="read-more" target="_blank">
+          <span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── 加密货币 ──────────────────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">💰</span>
+      <span class="section-title" data-zh="加密货币市场" data-en="Cryptocurrency Market">加密货币市场</span>
+    </div>
+
+    {% if crypto_prices %}
+    <div class="crypto-grid">
+      {% for coin in crypto_prices %}
+      <div class="crypto-card">
+        <div class="crypto-symbol">{{ coin.symbol }}</div>
+        <div class="crypto-name" data-zh="{{ coin.name_cn }}" data-en="{{ coin.name_cn }}">{{ coin.name_cn }}</div>
+        <div class="crypto-price">
+          ${% if coin.price >= 1000 %}{{ "{:,.0f}".format(coin.price) }}
+          {% elif coin.price >= 1 %}{{ "{:,.2f}".format(coin.price) }}
+          {% else %}{{ "{:.4f}".format(coin.price) }}{% endif %}
+        </div>
+        <div class="crypto-change {{ 'positive' if coin.change_24h >= 0 else 'negative' }}">
+          {{ "{:+.2f}".format(coin.change_24h) }}%
+          <span style="font-size:10px;font-weight:400;margin-left:4px;">24h</span>
+        </div>
+        {% if coin.market_cap %}
+        <div class="crypto-mcap">
+          <span data-zh="市值" data-en="Mkt Cap">市值</span>: ${{ "{:,.0f}".format(coin.market_cap / 1e9) }}B
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if crypto_chart_b64 %}
+    <div class="chart-wrap">
+      <img src="data:image/png;base64,{{ crypto_chart_b64 }}" alt="crypto chart">
+    </div>
+    {% endif %}
+
+    {% for article in crypto_news %}
+    <div class="article-card">
+      {% if article.image %}
+      <div class="article-img-wrap">
+        <img src="{{ article.image }}" alt="" onerror="this.parentElement.style.display='none'">
+      </div>
+      {% endif %}
+      <div class="article-body">
+        <div class="article-meta">
+          <span class="badge badge-crypto" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
+          {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
+        </div>
+        <div class="article-title">{{ article.title }}</div>
+        {% if article.summary_zh or article.summary_en %}<div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>{% endif %}
+        <a href="{{ article.link }}" class="read-more" target="_blank">
+          <span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── 全球股市与经济 ─────────────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📊</span>
+      <span class="section-title" data-zh="全球股市与经济" data-en="Global Markets & Economy">全球股市与经济</span>
+    </div>
+
+    {% if stock_indices %}
+    <table class="market-table">
+      <thead>
+        <tr>
+          <th data-zh="指数名称" data-en="Index">指数名称</th>
+          <th data-zh="英文全称" data-en="Full Name">英文全称</th>
+          <th data-zh="最新价格" data-en="Price">最新价格</th>
+          <th data-zh="涨跌" data-en="Change">涨跌</th>
+          <th data-zh="涨跌幅" data-en="Change %">涨跌幅</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for idx in stock_indices %}
+        <tr>
+          <td><strong data-zh="{{ idx.name_cn }}" data-en="{{ idx.name_en }}">{{ idx.name_cn }}</strong></td>
+          <td style="color:var(--muted)">{{ idx.name_en }}</td>
+          <td class="val">{{ "{:,.2f}".format(idx.value) }}</td>
+          <td class="{{ 'positive' if idx.change >= 0 else 'negative' }} val">{{ "{:+,.2f}".format(idx.change) }}</td>
+          <td class="{{ 'positive' if idx.change_pct >= 0 else 'negative' }} val">{{ "{:+.2f}".format(idx.change_pct) }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+    {% if market_chart_b64 %}
+    <div class="chart-wrap">
+      <img src="data:image/png;base64,{{ market_chart_b64 }}" alt="market chart">
+    </div>
+    {% endif %}
+
+    {% for article in economy_news %}
+    <div class="article-card">
+      {% if article.image %}
+      <div class="article-img-wrap">
+        <img src="{{ article.image }}" alt="" onerror="this.parentElement.style.display='none'">
+      </div>
+      {% endif %}
+      <div class="article-body">
+        <div class="article-meta">
+          <span class="badge badge-economy" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
+          {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
+        </div>
+        <div class="article-title">{{ article.title }}</div>
+        {% if article.summary_zh or article.summary_en %}<div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>{% endif %}
+        <a href="{{ article.link }}" class="read-more" target="_blank">
+          <span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div><!-- /container -->
+
+<!-- ── FOOTER ───────────────────────────────────────────────────────────────── -->
+<div class="footer">
+  <p>
+    <strong data-zh="每日全球要闻快报" data-en="Daily Global News Digest">每日全球要闻快报</strong>
+    &nbsp;·&nbsp;
+    <span data-zh="洛杉矶时间" data-en="Los Angeles">洛杉矶时间</span>
+    <strong>{{ la_time }}</strong>
+    &nbsp;·&nbsp;
+    <strong class="date-zh">{{ date_str }}</strong>
+    <strong class="date-en" style="display:none">{{ date_str_en }}</strong>
+  </p>
+  <p style="margin-top:6px;font-size:11px;">
+    <span data-zh="数据来源：" data-en="Sources: ">数据来源：</span>Reuters · BBC · NY Times · The Guardian · MIT Tech Review · Ars Technica · CoinDesk · The Block · CoinGecko · yfinance
+  </p>
+  <p style="margin-top:4px;font-size:11px;color:#555577;">
+    <span data-zh="本报告由自动化程序生成，内容仅供参考，不构成投资建议。" data-en="Auto-generated report for informational purposes only. Not investment advice.">本报告由自动化程序生成，内容仅供参考，不构成投资建议。</span>
+  </p>
+</div>
+
+<!-- ── 语言切换脚本 ─────────────────────────────────────────────────────────── -->
+<script>
+function setLang(lang) {
+  // 切换所有 data-zh/data-en 元素的文字
+  document.querySelectorAll('[data-zh]').forEach(function(el) {
+    el.innerHTML = lang === 'en'
+      ? (el.getAttribute('data-en') || el.getAttribute('data-zh'))
+      : el.getAttribute('data-zh');
+  });
+
+  // 切换日期显示（有单独的 zh/en 元素）
+  document.querySelectorAll('.date-zh').forEach(function(el){ el.style.display = lang==='en'?'none':''; });
+  document.querySelectorAll('.date-en').forEach(function(el){ el.style.display = lang==='en'?'':'none'; });
+
+  // 按钮高亮
+  document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+
+  // 保存偏好
+  try { localStorage.setItem('news_lang', lang); } catch(e){}
+}
+
+// 页面加载时恢复语言偏好（默认中文）
+(function(){
+  try {
+    var saved = localStorage.getItem('news_lang');
+    if (saved === 'en') setLang('en');
+  } catch(e){}
+})();
+</script>
+</body>
+</html>

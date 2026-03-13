@@ -1,0 +1,48 @@
+name: 每日全球要闻快报
+
+on:
+  schedule:
+    - cron: '30 14 * * *'   # 7:30 AM 洛杉矶 PDT (UTC-7, 夏令时 3月-11月)
+    - cron: '30 15 * * *'   # 7:30 AM 洛杉矶 PST (UTC-8, 冬令时 11月-3月)
+  workflow_dispatch:         # 允许手动触发
+
+permissions:
+  contents: write            # 推送 gh-pages 分支
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安装中文字体（matplotlib 图表用）
+        run: sudo apt-get install -y fonts-noto-cjk --quiet
+
+      - name: 安装 Python 依赖
+        run: pip install -r requirements.txt
+
+      - name: 安装 Playwright Chromium
+        run: playwright install chromium --with-deps
+
+      - name: 生成报告并发送邮件
+        env:
+          GMAIL_SENDER:     ${{ secrets.GMAIL_SENDER }}
+          GMAIL_PASSWORD:   ${{ secrets.GMAIL_PASSWORD }}
+          GMAIL_RECIPIENTS: ${{ secrets.GMAIL_RECIPIENTS }}
+        run: python main.py
+
+      - name: 部署到 GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir:  ./output
+          keep_files:   true          # 保留历史报告
+          commit_message: "报告 $(date +%Y-%m-%d)"
