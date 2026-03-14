@@ -24,7 +24,7 @@ HEADERS = {
 RSS_SOURCES = {
 
     'world': [
-        {'name': '路透社',     'name_en': 'Reuters',         'lang': 'en', 'url': 'https://feeds.reuters.com/reuters/worldNews'},
+        {'name': '法国24',     'name_en': 'France 24',       'lang': 'en', 'url': 'https://www.france24.com/en/rss'},
         {'name': '德国之声',   'name_en': 'Deutsche Welle',  'lang': 'en', 'url': 'https://rss.dw.com/rdf/rss-en-world'},
         {'name': 'NPR新闻',    'name_en': 'NPR News',        'lang': 'en', 'url': 'https://feeds.npr.org/1004/rss.xml'},
         {'name': '卫报',       'name_en': 'The Guardian',    'lang': 'en', 'url': 'https://www.theguardian.com/world/rss'},
@@ -33,7 +33,7 @@ RSS_SOURCES = {
 
     'ai': [
         {'name': 'TechCrunch', 'name_en': 'TechCrunch',     'lang': 'en', 'url': 'https://techcrunch.com/feed/'},
-        {'name': '路透社科技', 'name_en': 'Reuters Tech',    'lang': 'en', 'url': 'https://feeds.reuters.com/reuters/technologyNews'},
+        {'name': 'ZDNet',      'name_en': 'ZDNet',           'lang': 'en', 'url': 'https://www.zdnet.com/news/rss.xml'},
         {'name': 'Engadget',   'name_en': 'Engadget',        'lang': 'en', 'url': 'https://www.engadget.com/rss.xml'},
         {'name': 'Ars Technica','name_en':'Ars Technica',    'lang': 'en', 'url': 'https://feeds.arstechnica.com/arstechnica/technology-lab'},
         {'name': 'The Verge',  'name_en': 'The Verge',       'lang': 'en', 'url': 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml'},
@@ -51,9 +51,9 @@ RSS_SOURCES = {
     ],
 
     'economy': [
-        {'name': '路透社商业', 'name_en': 'Reuters Business','lang': 'en', 'url': 'https://feeds.reuters.com/reuters/businessNews'},
+        {'name': 'CBS财经',    'name_en': 'CBS MoneyWatch',  'lang': 'en', 'url': 'https://www.cbsnews.com/latest/rss/moneywatch'},
         {'name': 'CNBC',       'name_en': 'CNBC',            'lang': 'en', 'url': 'https://www.cnbc.com/id/100003114/device/rss/rss.html'},
-        {'name': 'Forbes商业', 'name_en': 'Forbes Business',  'lang': 'en', 'url': 'https://www.forbes.com/business/feed/'},
+        {'name': 'Forbes商业', 'name_en': 'Forbes Business', 'lang': 'en', 'url': 'https://www.forbes.com/business/feed/'},
         {'name': 'Yahoo财经',  'name_en': 'Yahoo Finance',   'lang': 'en', 'url': 'https://finance.yahoo.com/news/rssindex'},
         {'name': 'MarketWatch','name_en': 'MarketWatch',     'lang': 'en', 'url': 'https://feeds.content.dowjones.io/public/rss/mw_topstories'},
     ],
