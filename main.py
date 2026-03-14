@@ -164,34 +164,38 @@ def run():
         logger.error(f"PDF 转换失败（需要 playwright install chromium）: {e}")
         logger.info("将直接发送不含 PDF 附件的邮件")
 
-    # ── 生成静态 index.html（GitHub Pages 首页）──────────────────────
+    # ── 生成 index.html = 今日报告 + 历史面板 ────────────────────────
     try:
         import glob as _glob
+        from pathlib import Path as _Path
         reports = sorted(_glob.glob(str(out_dir / 'report_*.html')), reverse=True)
-        rows = ''
+
+        # 构建历史报告列表 HTML
+        history_items = ''
         for rpt in reports:
-            from pathlib import Path as _Path
             p = _Path(rpt)
-            d = p.name.replace('report_','').replace('.html','')
-            kb = p.stat().st_size // 1024
-            rows += f'<tr><td><a href="{p.name}">{d}</a></td><td style="color:#555577">{kb} KB</td></tr>'
-        latest = Path(reports[0]).name if reports else ''
-        redirect = f'<meta http-equiv="refresh" content="0; url={latest}">' if latest else ''
-        index_html = f'''<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">{redirect}
-<title>每日全球要闻快报</title>
-<style>body{{font-family:"Microsoft YaHei",sans-serif;background:#0d0d1a;color:#e2e2f0;padding:40px;}}
-h1{{color:#f0a500;}}a{{color:#3d86f5;}}table{{border-collapse:collapse;width:100%;max-width:500px;}}
-td{{padding:10px 16px;border-bottom:1px solid #2a2a50;}}
-.btn{{display:inline-block;background:#f0a500;color:#000;font-weight:700;padding:12px 32px;border-radius:8px;text-decoration:none;margin:20px 0;}}
-</style></head><body>
-<h1>📰 每日全球要闻快报</h1>
-{"<a class='btn' href='"+latest+"'>查看今日报告 →</a>" if latest else "<p>暂无报告</p>"}
-<h2 style="color:#8888aa;font-size:14px;margin-top:30px">历史报告</h2>
-<table>{rows}</table>
-<p style="color:#555577;font-size:12px;margin-top:30px">每天洛杉矶 07:30 自动更新 · 数据来源：Reuters · BBC · PA News · CoinGecko</p>
-</body></html>'''
+            d = p.name.replace('report_', '').replace('.html', '')
+            active = 'style="font-weight:700;color:#1d4ed8;"' if p.name == html_path.name else ''
+            history_items += f'<li><a href="{p.name}" {active}>{d}</a></li>'
+
+        history_widget = f'''
+<div id="hist-wrap" style="position:fixed;bottom:24px;left:24px;z-index:1000;font-family:Inter,sans-serif;">
+  <button onclick="var p=document.getElementById('hist-box');p.style.display=p.style.display==='none'?'block':'none'"
+    style="background:#1d4ed8;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);">
+    📅 历史报告
+  </button>
+  <div id="hist-box" style="display:none;background:#fff;border:1px solid #e2e8f0;border-radius:10px;
+    box-shadow:0 4px 20px rgba(0,0,0,.12);padding:12px 16px;margin-top:6px;max-height:320px;overflow-y:auto;min-width:160px;">
+    <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;">
+      {history_items}
+    </ul>
+  </div>
+</div>'''
+
+        # index.html = 今日报告内容 + 历史面板（插在 </body> 前）
+        index_html = html_content.replace('</body>', history_widget + '\n</body>')
         (out_dir / 'index.html').write_text(index_html, encoding='utf-8')
-        logger.info("静态 index.html 已生成")
+        logger.info("index.html 已生成（今日报告 + 历史面板）")
     except Exception as e:
         logger.warning(f"index.html 生成失败: {e}")
 
