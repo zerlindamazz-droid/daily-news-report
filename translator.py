@@ -47,27 +47,21 @@ def enrich_articles_with_bilingual_summary(all_news):
             title = article.get('title', '') or ''
 
             if lang == 'zh':
-                # PA News：中文原文 + 翻译成英文
-                article['title_zh'] = title
+                # PA News：标题/摘要是中文原文，翻译成英文
+                article['title_zh']  = title
+                article['title_en']  = _translate(title, target='en') if title else ''
+                if title: time.sleep(DELAY)
                 article['summary_zh'] = summary
-                if summary:
-                    article['summary_en'] = _translate(summary, target='en')
-                    time.sleep(DELAY)
-                else:
-                    article['summary_en'] = ''
+                article['summary_en'] = _translate(summary, target='en') if summary else ''
+                if summary: time.sleep(DELAY)
             else:
-                # 英文来源：英文原文 + 翻译成中文
+                # 英文来源：标题/摘要是英文原文，翻译成中文
+                article['title_en']  = title
+                article['title_zh']  = _translate(title, target='zh-CN') if title else ''
+                if title: time.sleep(DELAY)
                 article['summary_en'] = summary
-                if title:
-                    article['title_zh'] = _translate(title, target='zh-CN')
-                    time.sleep(DELAY)
-                else:
-                    article['title_zh'] = ''
-                if summary:
-                    article['summary_zh'] = _translate(summary, target='zh-CN')
-                    time.sleep(DELAY)
-                else:
-                    article['summary_zh'] = ''
+                article['summary_zh'] = _translate(summary, target='zh-CN') if summary else ''
+                if summary: time.sleep(DELAY)
 
             done += 1
             logger.debug(f"  [{done}/{total}] 翻译完成: {article['title'][:30]}")

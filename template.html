@@ -306,11 +306,9 @@ a:hover { text-decoration: underline; }
           <span class="badge badge-world" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
-        <div class="article-title">{{ article.title }}</div>
-        {% if article.lang == 'zh' %}
-          {% if article.summary_zh %}<div class="article-summary">{{ article.summary_zh }}</div>{% endif %}
-        {% else %}
-          {% if article.summary_en %}<div class="article-summary">{{ article.summary_en }}</div>{% endif %}
+        <div class="article-title" data-zh="{{ article.title_zh or article.title }}" data-en="{{ article.title_en or article.title }}">{{ article.title_zh or article.title }}</div>
+        {% if article.summary_zh or article.summary_en %}
+        <div class="article-summary" data-zh="{{ article.summary_zh }}" data-en="{{ article.summary_en }}">{{ article.summary_zh or article.summary_en }}</div>
         {% endif %}
         <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
@@ -341,11 +339,9 @@ a:hover { text-decoration: underline; }
           <span class="badge badge-ai" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
-        <div class="article-title">{{ article.title }}</div>
-        {% if article.lang == 'zh' %}
-          {% if article.summary_zh %}<div class="article-summary">{{ article.summary_zh }}</div>{% endif %}
-        {% else %}
-          {% if article.summary_en %}<div class="article-summary">{{ article.summary_en }}</div>{% endif %}
+        <div class="article-title" data-zh="{{ article.title_zh or article.title }}" data-en="{{ article.title_en or article.title }}">{{ article.title_zh or article.title }}</div>
+        {% if article.summary_zh or article.summary_en %}
+        <div class="article-summary" data-zh="{{ article.summary_zh }}" data-en="{{ article.summary_en }}">{{ article.summary_zh or article.summary_en }}</div>
         {% endif %}
         <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
@@ -409,11 +405,9 @@ a:hover { text-decoration: underline; }
           <span class="badge badge-crypto" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
-        <div class="article-title">{{ article.title }}</div>
-        {% if article.lang == 'zh' %}
-          {% if article.summary_zh %}<div class="article-summary">{{ article.summary_zh }}</div>{% endif %}
-        {% else %}
-          {% if article.summary_en %}<div class="article-summary">{{ article.summary_en }}</div>{% endif %}
+        <div class="article-title" data-zh="{{ article.title_zh or article.title }}" data-en="{{ article.title_en or article.title }}">{{ article.title_zh or article.title }}</div>
+        {% if article.summary_zh or article.summary_en %}
+        <div class="article-summary" data-zh="{{ article.summary_zh }}" data-en="{{ article.summary_en }}">{{ article.summary_zh or article.summary_en }}</div>
         {% endif %}
         <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
@@ -477,11 +471,9 @@ a:hover { text-decoration: underline; }
           <span class="badge badge-economy" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
-        <div class="article-title">{{ article.title }}</div>
-        {% if article.lang == 'zh' %}
-          {% if article.summary_zh %}<div class="article-summary">{{ article.summary_zh }}</div>{% endif %}
-        {% else %}
-          {% if article.summary_en %}<div class="article-summary">{{ article.summary_en }}</div>{% endif %}
+        <div class="article-title" data-zh="{{ article.title_zh or article.title }}" data-en="{{ article.title_en or article.title }}">{{ article.title_zh or article.title }}</div>
+        {% if article.summary_zh or article.summary_en %}
+        <div class="article-summary" data-zh="{{ article.summary_zh }}" data-en="{{ article.summary_en }}">{{ article.summary_zh or article.summary_en }}</div>
         {% endif %}
         <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>

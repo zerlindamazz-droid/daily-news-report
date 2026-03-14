@@ -31,14 +31,18 @@ def _build_key_points(news_data, market_data):
     # 全球头条
     world = news_data.get('world', [])
     if world:
-        points.append({'zh': f"【全球】{world[0]['title']}",
-                       'en': f"[World] {world[0]['title']}"})
+        points.append({
+            'zh': f"【全球】{world[0].get('title_zh') or world[0]['title']}",
+            'en': f"[World] {world[0].get('title_en') or world[0]['title']}",
+        })
 
     # AI 头条
     ai = news_data.get('ai', [])
     if ai:
-        points.append({'zh': f"【AI】{ai[0]['title']}",
-                       'en': f"[AI] {ai[0]['title']}"})
+        points.append({
+            'zh': f"【AI】{ai[0].get('title_zh') or ai[0]['title']}",
+            'en': f"[AI] {ai[0].get('title_en') or ai[0]['title']}",
+        })
 
     # 加密货币
     crypto = market_data.get('crypto_prices', [])
@@ -68,8 +72,10 @@ def _build_key_points(news_data, market_data):
     # 经济头条
     eco = news_data.get('economy', [])
     if eco:
-        points.append({'zh': f"【经济】{eco[0]['title']}",
-                       'en': f"[Economy] {eco[0]['title']}"})
+        points.append({
+            'zh': f"【经济】{eco[0].get('title_zh') or eco[0]['title']}",
+            'en': f"[Economy] {eco[0].get('title_en') or eco[0]['title']}",
+        })
 
     return points[:5]
 
