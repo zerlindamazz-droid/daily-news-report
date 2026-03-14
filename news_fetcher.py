@@ -143,14 +143,23 @@ def _deduplicate(articles):
 def fetch_all_news(max_per_category=5):
     """
     抓取所有类别新闻。
-    加密货币类优先排列 PA News 中文文章。
-    返回的文章含 summary_zh/summary_en 占位（后续由 translator 填充）。
+    - world/economy：每个来源最多 2 条，保证来源多样化，最多取 8 条
+    - ai/crypto：每个来源最多 2 条，最多取 max_per_category 条
     """
+    # 每个类别的配置：(每来源条数上限, 总条数上限)
+    CATEGORY_CONFIG = {
+        'world':   (2, 8),
+        'ai':      (2, max_per_category),
+        'crypto':  (2, max_per_category),
+        'economy': (2, 8),
+    }
+
     all_news = {}
     for category, sources in RSS_SOURCES.items():
+        per_src, total_max = CATEGORY_CONFIG.get(category, (2, max_per_category))
         pool = []
         for src in sources:
-            fetched = _fetch_source(src, limit=4)
+            fetched = _fetch_source(src, limit=per_src)
             pool.extend(fetched)
 
         pool = _deduplicate(pool)
@@ -161,7 +170,7 @@ def fetch_all_news(max_per_category=5):
             rest = [a for a in pool if a['lang'] != 'zh']
             pool = pa + rest
 
-        all_news[category] = pool[:max_per_category]
+        all_news[category] = pool[:total_max]
         logger.info(f"[{category}] 共 {len(all_news[category])} 篇")
 
     return all_news
