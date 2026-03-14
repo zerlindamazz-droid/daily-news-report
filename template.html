@@ -39,8 +39,8 @@ body {
   font-family: 'Inter','Noto Sans SC','Microsoft YaHei',-apple-system,sans-serif;
   background: var(--bg);
   color: var(--text);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 18px;
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -82,7 +82,7 @@ a:hover { text-decoration: underline; }
   text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
 }
 .header-title {
-  font-size: 32px; font-weight: 700; color: var(--text);
+  font-size: 38px; font-weight: 700; color: var(--text);
   letter-spacing: -0.5px; line-height: 1.15;
 }
 .header-title .accent { color: var(--accent); }
@@ -90,10 +90,10 @@ a:hover { text-decoration: underline; }
   text-align: right;
 }
 .header-date .date-main {
-  font-size: 15px; font-weight: 600; color: var(--text); display: block;
+  font-size: 17px; font-weight: 600; color: var(--text); display: block;
 }
 .header-date .date-sub {
-  font-size: 13px; color: var(--muted); margin-top: 2px; display: block;
+  font-size: 15px; color: var(--muted); margin-top: 2px; display: block;
 }
 
 /* ── LAYOUT ───────────────────────────────────────── */
@@ -114,7 +114,7 @@ a:hover { text-decoration: underline; }
 }
 .keypoints ul { list-style: none; }
 .keypoints li {
-  font-size: 15px; color: var(--text);
+  font-size: 17px; color: var(--text);
   padding: 5px 0 5px 16px;
   position: relative;
   border-bottom: 1px solid #dbeafe;
@@ -135,8 +135,8 @@ a:hover { text-decoration: underline; }
 }
 .section-left { display: flex; align-items: center; gap: 10px; }
 .section-icon { font-size: 22px; }
-.section-title { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
-.section-count { font-size: 13px; color: var(--muted); }
+.section-title { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+.section-count { font-size: 15px; color: var(--muted); }
 
 /* ── ARTICLE CARD ─────────────────────────────────── */
 .articles-list { display: flex; flex-direction: column; gap: 14px; }
@@ -170,11 +170,16 @@ a:hover { text-decoration: underline; }
 
 .article-date { font-size: 12px; color: var(--subtle); }
 .article-title {
-  font-size: 17px; font-weight: 600; color: var(--text);
+  font-size: 20px; font-weight: 600; color: var(--text);
   line-height: 1.45; letter-spacing: -0.1px;
 }
-.article-summary { font-size: 14.5px; color: var(--muted); line-height: 1.65; }
-.read-more { font-size: 13px; color: var(--accent); font-weight: 500; margin-top: 2px; }
+.article-summary-en { font-size: 16px; color: var(--muted); line-height: 1.65; }
+.article-summary-zh {
+  font-size: 16px; color: var(--text); line-height: 1.7;
+  margin-top: 6px; padding-top: 6px;
+  border-top: 1px dashed var(--border2);
+}
+.read-more { font-size: 14px; color: var(--accent); font-weight: 500; margin-top: 4px; }
 
 /* ── CRYPTO GRID ──────────────────────────────────── */
 .crypto-grid {
@@ -307,8 +312,11 @@ a:hover { text-decoration: underline; }
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
         <div class="article-title">{{ article.title }}</div>
-        {% if article.summary_zh or article.summary_en %}
-        <div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>
+        {% if article.summary_en %}
+        <div class="article-summary-en">{{ article.summary_en }}</div>
+        {% endif %}
+        {% if article.summary_zh %}
+        <div class="article-summary-zh">{{ article.summary_zh }}</div>
         {% endif %}
         <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
@@ -340,8 +348,11 @@ a:hover { text-decoration: underline; }
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
         <div class="article-title">{{ article.title }}</div>
-        {% if article.summary_zh or article.summary_en %}
-        <div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>
+        {% if article.summary_en %}
+        <div class="article-summary-en">{{ article.summary_en }}</div>
+        {% endif %}
+        {% if article.summary_zh %}
+        <div class="article-summary-zh">{{ article.summary_zh }}</div>
         {% endif %}
         <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
@@ -406,8 +417,11 @@ a:hover { text-decoration: underline; }
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
         <div class="article-title">{{ article.title }}</div>
-        {% if article.summary_zh or article.summary_en %}
-        <div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>
+        {% if article.summary_en %}
+        <div class="article-summary-en">{{ article.summary_en }}</div>
+        {% endif %}
+        {% if article.summary_zh %}
+        <div class="article-summary-zh">{{ article.summary_zh }}</div>
         {% endif %}
         <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
@@ -472,8 +486,11 @@ a:hover { text-decoration: underline; }
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
         <div class="article-title">{{ article.title }}</div>
-        {% if article.summary_zh or article.summary_en %}
-        <div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>
+        {% if article.summary_en %}
+        <div class="article-summary-en">{{ article.summary_en }}</div>
+        {% endif %}
+        {% if article.summary_zh %}
+        <div class="article-summary-zh">{{ article.summary_zh }}</div>
         {% endif %}
         <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
