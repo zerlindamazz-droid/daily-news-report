@@ -5,31 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daily Brief — {{ date_str }}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:       #09090f;
-  --surface:  #101018;
-  --surface2: #171722;
-  --border:   #1e1e30;
-  --border2:  #2a2a3e;
-  --accent:   #f59e0b;
-  --accent2:  #fbbf24;
-  --text:     #e4e4ed;
-  --muted:    #7a7a96;
-  --subtle:   #3a3a52;
-  --green:    #10b981;
-  --red:      #ef4444;
-  --blue:     #4f8ef7;
-  --badge-gl: rgba(180,40,40,.18);
-  --badge-gl-text: #f87171;
-  --badge-ai: rgba(120,60,210,.18);
-  --badge-ai-text: #a78bfa;
-  --badge-cr: rgba(40,110,220,.18);
-  --badge-cr-text: #60a5fa;
-  --badge-ec: rgba(20,150,100,.18);
-  --badge-ec-text: #34d399;
+  --bg:         #f0f2f5;
+  --surface:    #ffffff;
+  --surface2:   #f8f9fc;
+  --border:     #e8eaed;
+  --border2:    #d1d5db;
+  --text:       #111827;
+  --muted:      #6b7280;
+  --subtle:     #9ca3af;
+  --accent:     #1d4ed8;
+  --accent-bg:  #eff6ff;
+  --green:      #059669;
+  --green-bg:   #f0fdf4;
+  --red:        #dc2626;
+  --red-bg:     #fef2f2;
+  --orange:     #ea580c;
+  --orange-bg:  #fff7ed;
+  --purple:     #7c3aed;
+  --purple-bg:  #f5f3ff;
+
+  --world-c:  #dc2626; --world-bg:  #fef2f2; --world-bd:  #fecaca;
+  --ai-c:     #7c3aed; --ai-bg:     #f5f3ff; --ai-bd:     #ddd6fe;
+  --crypto-c: #d97706; --crypto-bg: #fffbeb; --crypto-bd: #fde68a;
+  --eco-c:    #059669; --eco-bg:    #f0fdf4; --eco-bd:    #a7f3d0;
 }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -37,108 +40,118 @@ body {
   background: var(--bg);
   color: var(--text);
   font-size: 16px;
-  line-height: 1.65;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
-  -webkit-font-smoothing: antialiased;
 }
-a { color: var(--blue); text-decoration: none; }
+a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-/* ── LANG TOGGLE ──────────────────────────────────────────────── */
+/* ── LANG TOGGLE ──────────────────────────────────── */
 .lang-toggle {
-  position: fixed; top: 18px; right: 24px; z-index: 999;
+  position: fixed; top: 16px; right: 20px; z-index: 999;
   display: flex; gap: 2px;
-  background: var(--surface2); border: 1px solid var(--border2);
+  background: #fff; border: 1px solid var(--border);
   border-radius: 8px; padding: 3px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
 }
 .lang-toggle button {
   background: transparent; border: none;
   color: var(--muted); font-size: 12px; font-weight: 600;
   padding: 4px 14px; border-radius: 6px; cursor: pointer;
-  letter-spacing: .5px; transition: all .15s;
-  font-family: inherit;
+  letter-spacing: .5px; transition: all .15s; font-family: inherit;
 }
-.lang-toggle button.active { background: var(--accent); color: #000; }
+.lang-toggle button.active { background: var(--accent); color: #fff; }
 @media print { .lang-toggle { display: none; } }
 
-/* ── HEADER ───────────────────────────────────────────────────── */
+/* ── HEADER ───────────────────────────────────────── */
 .header {
+  background: #fff;
   border-bottom: 1px solid var(--border);
-  padding: 36px 0 28px;
-  background: var(--surface);
+  padding: 28px 0 22px;
 }
-.header-inner { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+.header-inner {
+  max-width: 1080px; margin: 0 auto; padding: 0 32px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.header-brand {}
 .header-eyebrow {
-  font-size: 11px; font-weight: 600; letter-spacing: 3px;
-  color: var(--accent); text-transform: uppercase; margin-bottom: 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
 }
 .header-title {
-  font-size: 36px; font-weight: 700; color: #fff;
+  font-size: 32px; font-weight: 700; color: var(--text);
   letter-spacing: -0.5px; line-height: 1.15;
 }
 .header-title .accent { color: var(--accent); }
-.header-meta {
-  margin-top: 12px; font-size: 14px; color: var(--muted);
-  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+.header-date {
+  text-align: right;
 }
-.header-meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--subtle); }
-.header-meta strong { color: var(--text); font-weight: 500; }
+.header-date .date-main {
+  font-size: 15px; font-weight: 600; color: var(--text); display: block;
+}
+.header-date .date-sub {
+  font-size: 13px; color: var(--muted); margin-top: 2px; display: block;
+}
 
-/* ── LAYOUT ───────────────────────────────────────────────────── */
+/* ── LAYOUT ───────────────────────────────────────── */
 .container { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
 
-/* ── KEY POINTS ───────────────────────────────────────────────── */
+/* ── KEY POINTS ───────────────────────────────────── */
 .keypoints {
-  margin: 32px 0 0;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-left: 3px solid var(--accent);
-  border-radius: 0 8px 8px 0;
-  padding: 22px 28px;
+  margin: 28px 0 0;
+  background: var(--accent-bg);
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 20px 26px;
 }
 .keypoints-label {
-  font-size: 11px; font-weight: 600; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
 }
-.keypoints ul { list-style: none; padding: 0; }
+.keypoints ul { list-style: none; }
 .keypoints li {
   font-size: 15px; color: var(--text);
-  padding: 6px 0;
-  border-bottom: 1px solid var(--border);
-  display: flex; gap: 10px; align-items: flex-start;
+  padding: 5px 0 5px 16px;
+  position: relative;
+  border-bottom: 1px solid #dbeafe;
 }
-.keypoints li:last-child { border-bottom: none; }
+.keypoints li:last-child { border-bottom: none; padding-bottom: 0; }
 .keypoints li::before {
-  content: '—'; color: var(--accent); font-weight: 700;
-  flex-shrink: 0; margin-top: 1px;
+  content: ''; position: absolute; left: 0; top: 13px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
 }
 
-/* ── SECTION ──────────────────────────────────────────────────── */
-.section { margin-top: 48px; }
+/* ── SECTION ──────────────────────────────────────── */
+.section { margin-top: 40px; }
 .section-header {
-  display: flex; align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 22px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px; padding-bottom: 14px;
+  border-bottom: 2px solid var(--border);
 }
 .section-left { display: flex; align-items: center; gap: 10px; }
-.section-icon { font-size: 20px; }
-.section-title { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
-.section-count { font-size: 12px; color: var(--muted); }
+.section-icon { font-size: 22px; }
+.section-title { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+.section-count { font-size: 13px; color: var(--muted); }
 
-/* ── ARTICLE CARD ─────────────────────────────────────────────── */
+/* ── ARTICLE CARD ─────────────────────────────────── */
+.articles-list { display: flex; flex-direction: column; gap: 14px; }
 .article-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 20px 22px;
   display: flex; gap: 20px;
-  padding: 22px 0;
-  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
   page-break-inside: avoid;
 }
-.article-card:last-child { border-bottom: none; }
 .article-img-wrap {
-  flex: 0 0 176px; height: 118px;
-  border-radius: 6px; overflow: hidden;
+  flex: 0 0 168px; height: 112px;
+  border-radius: 8px; overflow: hidden;
   background: var(--surface2);
 }
 .article-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -146,120 +159,122 @@ a:hover { text-decoration: underline; }
 .article-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 .badge {
-  display: inline-block;
-  font-size: 10px; font-weight: 700; letter-spacing: .5px;
-  padding: 2px 10px; border-radius: 4px;
-  text-transform: uppercase;
+  display: inline-block; font-size: 11px; font-weight: 600;
+  letter-spacing: .3px; padding: 2px 10px; border-radius: 20px;
+  border: 1px solid;
 }
-.badge-world  { background: var(--badge-gl); color: var(--badge-gl-text); }
-.badge-ai     { background: var(--badge-ai); color: var(--badge-ai-text); }
-.badge-crypto { background: var(--badge-cr); color: var(--badge-cr-text); }
-.badge-economy{ background: var(--badge-ec); color: var(--badge-ec-text); }
+.badge-world  { background: var(--world-bg);  color: var(--world-c);  border-color: var(--world-bd); }
+.badge-ai     { background: var(--ai-bg);     color: var(--ai-c);     border-color: var(--ai-bd); }
+.badge-crypto { background: var(--crypto-bg); color: var(--crypto-c); border-color: var(--crypto-bd); }
+.badge-economy{ background: var(--eco-bg);    color: var(--eco-c);    border-color: var(--eco-bd); }
 
-.article-date { font-size: 12px; color: var(--muted); }
+.article-date { font-size: 12px; color: var(--subtle); }
 .article-title {
-  font-size: 17px; font-weight: 600; color: #fff;
+  font-size: 17px; font-weight: 600; color: var(--text);
   line-height: 1.45; letter-spacing: -0.1px;
 }
-.article-summary {
-  font-size: 14.5px; color: var(--muted);
-  line-height: 1.6;
-}
-.read-more { font-size: 13px; color: var(--accent); font-weight: 500; margin-top: auto; }
+.article-summary { font-size: 14.5px; color: var(--muted); line-height: 1.65; }
+.read-more { font-size: 13px; color: var(--accent); font-weight: 500; margin-top: 2px; }
 
-/* ── DIVIDER ──────────────────────────────────────────────────── */
-.section-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
-
-/* ── CRYPTO GRID ──────────────────────────────────────────────── */
+/* ── CRYPTO GRID ──────────────────────────────────── */
 .crypto-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 10px; margin-bottom: 24px;
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 12px;
+  margin-bottom: 20px;
 }
 .crypto-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 16px 18px;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
 }
-.crypto-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-.crypto-symbol { font-size: 15px; font-weight: 700; color: #fff; }
+.crypto-top {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; margin-bottom: 10px;
+}
+.crypto-symbol { font-size: 15px; font-weight: 700; color: var(--text); }
 .crypto-name   { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.crypto-change { font-size: 13px; font-weight: 700; text-align: right; }
+.crypto-change { font-size: 13px; font-weight: 700; text-align: right; line-height: 1.3; }
+.crypto-change small { display: block; font-size: 10px; font-weight: 400; color: var(--subtle); }
 .crypto-price  {
-  font-size: 19px; font-weight: 600; color: #fff;
-  font-variant-numeric: tabular-nums; letter-spacing: -0.3px;
+  font-size: 20px; font-weight: 700; color: var(--text);
+  font-variant-numeric: tabular-nums; letter-spacing: -0.5px;
 }
-.crypto-mcap   { font-size: 11px; color: var(--muted); margin-top: 6px; }
+.crypto-mcap { font-size: 11px; color: var(--subtle); margin-top: 6px; }
 .positive { color: var(--green); }
-.negative { color: var(--red);   }
+.negative { color: var(--red); }
 
-/* ── CHART ────────────────────────────────────────────────────── */
+/* ── CHART ────────────────────────────────────────── */
 .chart-wrap {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; overflow: hidden; margin-bottom: 24px;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
 }
 .chart-wrap img { width: 100%; display: block; }
 
-/* ── MARKET TABLE ─────────────────────────────────────────────── */
-.market-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
-.market-table thead tr { border-bottom: 1px solid var(--border2); }
-.market-table th {
-  font-size: 11px; font-weight: 600; letter-spacing: 1px;
-  text-transform: uppercase; color: var(--muted);
-  padding: 10px 14px; text-align: left;
+/* ── MARKET TABLE ─────────────────────────────────── */
+.market-table-wrap {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
 }
-.market-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 15px; }
+.market-table { width: 100%; border-collapse: collapse; }
+.market-table thead { background: var(--surface2); }
+.market-table th {
+  font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--muted);
+  padding: 12px 18px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.market-table td { padding: 13px 18px; border-bottom: 1px solid var(--border); font-size: 15px; }
 .market-table tr:last-child td { border-bottom: none; }
-.market-table .name-cn { font-weight: 600; color: #fff; }
+.market-table tr:hover td { background: var(--surface2); }
+.market-table .name-cn { font-weight: 600; }
 .market-table .name-en { font-size: 13px; color: var(--muted); }
 .market-table .val { font-variant-numeric: tabular-nums; font-weight: 500; }
 
-/* ── FOOTER ───────────────────────────────────────────────────── */
+/* ── FOOTER ───────────────────────────────────────── */
 .footer {
-  margin-top: 64px; padding: 32px 0;
+  margin-top: 56px; padding: 32px 0;
   border-top: 1px solid var(--border);
-  background: var(--surface);
+  background: #fff;
 }
-.footer-inner {
-  max-width: 1080px; margin: 0 auto; padding: 0 32px;
-  display: flex; flex-direction: column; gap: 6px;
-}
-.footer-title { font-size: 14px; font-weight: 600; color: var(--text); }
-.footer-sources { font-size: 12px; color: var(--muted); line-height: 1.7; }
-.footer-disclaimer { font-size: 11px; color: var(--subtle); margin-top: 4px; }
-
-@media print {
-  .article-card, .crypto-card, .keypoints { break-inside: avoid; }
-}
+.footer-inner { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+.footer-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.footer-sources { font-size: 12px; color: var(--muted); line-height: 1.8; }
+.footer-disclaimer { font-size: 11px; color: var(--subtle); margin-top: 6px; }
 </style>
 </head>
 <body>
 
-<!-- ── LANG TOGGLE ──────────────────────────────────────────────────────────── -->
+<!-- ── LANG TOGGLE ──────────────────────────────────────────────────── -->
 <div class="lang-toggle">
   <button id="btn-zh" class="active" onclick="setLang('zh')">中文</button>
   <button id="btn-en" onclick="setLang('en')">EN</button>
 </div>
 
-<!-- ── HEADER ───────────────────────────────────────────────────────────────── -->
+<!-- ── HEADER ───────────────────────────────────────────────────────── -->
 <div class="header">
   <div class="header-inner">
-    <div class="header-eyebrow" data-zh="每日全球要闻快报" data-en="Daily Global Intelligence Brief">每日全球要闻快报</div>
-    <div class="header-title">
-      <span data-zh="全球" data-en="Global ">全球</span><span class="accent" data-zh="要闻" data-en="News">要闻</span><span data-zh=" 快报" data-en=" Brief"> 快报</span>
+    <div class="header-brand">
+      <div class="header-eyebrow" data-zh="每日全球要闻快报" data-en="Daily Global Intelligence Brief">每日全球要闻快报</div>
+      <div class="header-title">
+        <span data-zh="全球" data-en="Global ">全球</span><span class="accent" data-zh="要闻" data-en="News">要闻</span><span data-zh=" 快报" data-en=" Brief"> 快报</span>
+      </div>
     </div>
-    <div class="header-meta">
-      <strong class="date-zh">{{ date_str }}</strong>
-      <strong class="date-en" style="display:none">{{ date_str_en }}</strong>
-      <span class="dot"></span>
-      <span data-zh="洛杉矶时间" data-en="Los Angeles">洛杉矶时间</span>
-      <strong>{{ la_time }}</strong>
-      <span data-zh="发布" data-en="Published">发布</span>
+    <div class="header-date">
+      <span class="date-main date-zh">{{ date_str }}</span>
+      <span class="date-main date-en" style="display:none">{{ date_str_en }}</span>
+      <span class="date-sub">
+        <span data-zh="洛杉矶时间" data-en="Los Angeles Time">洛杉矶时间</span>
+        {{ la_time }}
+        <span data-zh="发布" data-en="Published">发布</span>
+      </span>
     </div>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- ── KEY POINTS ─────────────────────────────────────────────────────────── -->
+  <!-- ── KEY POINTS ───────────────────────────────────────────────── -->
   <div class="keypoints">
     <div class="keypoints-label" data-zh="今日要点" data-en="Today's Highlights">今日要点</div>
     <ul>
@@ -269,7 +284,7 @@ a:hover { text-decoration: underline; }
     </ul>
   </div>
 
-  <!-- ── WORLD NEWS ──────────────────────────────────────────────────────────── -->
+  <!-- ── WORLD NEWS ────────────────────────────────────────────────── -->
   <div class="section">
     <div class="section-header">
       <div class="section-left">
@@ -278,6 +293,7 @@ a:hover { text-decoration: underline; }
       </div>
       <span class="section-count">{{ world_news|length }}<span data-zh=" 条" data-en=" stories"> 条</span></span>
     </div>
+    <div class="articles-list">
     {% for article in world_news %}
     <div class="article-card">
       {% if article.image %}
@@ -294,17 +310,14 @@ a:hover { text-decoration: underline; }
         {% if article.summary_zh or article.summary_en %}
         <div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>
         {% endif %}
-        <a href="{{ article.link }}" class="read-more" target="_blank">
-          <span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span>
-        </a>
+        <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
     </div>
     {% endfor %}
+    </div>
   </div>
 
-  <hr class="section-divider" style="margin-top:48px;">
-
-  <!-- ── AI & TECH ──────────────────────────────────────────────────────────── -->
+  <!-- ── AI & TECH ─────────────────────────────────────────────────── -->
   <div class="section">
     <div class="section-header">
       <div class="section-left">
@@ -313,6 +326,7 @@ a:hover { text-decoration: underline; }
       </div>
       <span class="section-count">{{ ai_news|length }}<span data-zh=" 条" data-en=" stories"> 条</span></span>
     </div>
+    <div class="articles-list">
     {% for article in ai_news %}
     <div class="article-card">
       {% if article.image %}
@@ -329,17 +343,14 @@ a:hover { text-decoration: underline; }
         {% if article.summary_zh or article.summary_en %}
         <div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>
         {% endif %}
-        <a href="{{ article.link }}" class="read-more" target="_blank">
-          <span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span>
-        </a>
+        <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
     </div>
     {% endfor %}
+    </div>
   </div>
 
-  <hr class="section-divider" style="margin-top:48px;">
-
-  <!-- ── CRYPTO ─────────────────────────────────────────────────────────────── -->
+  <!-- ── CRYPTO ────────────────────────────────────────────────────── -->
   <div class="section">
     <div class="section-header">
       <div class="section-left">
@@ -358,8 +369,8 @@ a:hover { text-decoration: underline; }
             <div class="crypto-name" data-zh="{{ coin.name_cn }}" data-en="{{ coin.name_cn }}">{{ coin.name_cn }}</div>
           </div>
           <div class="crypto-change {{ 'positive' if coin.change_24h >= 0 else 'negative' }}">
-            {{ "{:+.2f}".format(coin.change_24h) }}%<br>
-            <span style="font-size:10px;font-weight:400;color:var(--muted)">24h</span>
+            {{ "{:+.2f}".format(coin.change_24h) }}%
+            <small>24h</small>
           </div>
         </div>
         <div class="crypto-price">
@@ -368,9 +379,7 @@ a:hover { text-decoration: underline; }
           {% else %}{{ "{:.4f}".format(coin.price) }}{% endif %}
         </div>
         {% if coin.market_cap %}
-        <div class="crypto-mcap">
-          <span data-zh="市值" data-en="Mkt Cap">市值</span> ${{ "{:,.0f}".format(coin.market_cap / 1e9) }}B
-        </div>
+        <div class="crypto-mcap"><span data-zh="市值" data-en="Mkt Cap">市值</span> ${{ "{:,.0f}".format(coin.market_cap / 1e9) }}B</div>
         {% endif %}
       </div>
       {% endfor %}
@@ -383,6 +392,7 @@ a:hover { text-decoration: underline; }
     </div>
     {% endif %}
 
+    <div class="articles-list">
     {% for article in crypto_news %}
     <div class="article-card">
       {% if article.image %}
@@ -399,17 +409,14 @@ a:hover { text-decoration: underline; }
         {% if article.summary_zh or article.summary_en %}
         <div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>
         {% endif %}
-        <a href="{{ article.link }}" class="read-more" target="_blank">
-          <span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span>
-        </a>
+        <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
     </div>
     {% endfor %}
+    </div>
   </div>
 
-  <hr class="section-divider" style="margin-top:48px;">
-
-  <!-- ── ECONOMY & MARKETS ──────────────────────────────────────────────────── -->
+  <!-- ── ECONOMY ───────────────────────────────────────────────────── -->
   <div class="section" style="margin-bottom:0">
     <div class="section-header">
       <div class="section-left">
@@ -419,28 +426,30 @@ a:hover { text-decoration: underline; }
     </div>
 
     {% if stock_indices %}
-    <table class="market-table">
-      <thead>
-        <tr>
-          <th data-zh="指数" data-en="Index">指数</th>
-          <th data-zh="全称" data-en="Name">全称</th>
-          <th data-zh="价格" data-en="Price">价格</th>
-          <th data-zh="涨跌" data-en="Change">涨跌</th>
-          <th data-zh="涨跌幅" data-en="Change %">涨跌幅</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for idx in stock_indices %}
-        <tr>
-          <td class="name-cn" data-zh="{{ idx.name_cn }}" data-en="{{ idx.name_en }}">{{ idx.name_cn }}</td>
-          <td class="name-en">{{ idx.name_en }}</td>
-          <td class="val">{{ "{:,.2f}".format(idx.value) }}</td>
-          <td class="{{ 'positive' if idx.change >= 0 else 'negative' }} val">{{ "{:+,.2f}".format(idx.change) }}</td>
-          <td class="{{ 'positive' if idx.change_pct >= 0 else 'negative' }} val">{{ "{:+.2f}".format(idx.change_pct) }}%</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="market-table-wrap">
+      <table class="market-table">
+        <thead>
+          <tr>
+            <th data-zh="指数" data-en="Index">指数</th>
+            <th data-zh="全称" data-en="Name">全称</th>
+            <th data-zh="价格" data-en="Price">价格</th>
+            <th data-zh="涨跌" data-en="Change">涨跌</th>
+            <th data-zh="涨跌幅" data-en="Change %">涨跌幅</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for idx in stock_indices %}
+          <tr>
+            <td class="name-cn" data-zh="{{ idx.name_cn }}" data-en="{{ idx.name_en }}">{{ idx.name_cn }}</td>
+            <td class="name-en">{{ idx.name_en }}</td>
+            <td class="val">{{ "{:,.2f}".format(idx.value) }}</td>
+            <td class="{{ 'positive' if idx.change >= 0 else 'negative' }} val">{{ "{:+,.2f}".format(idx.change) }}</td>
+            <td class="{{ 'positive' if idx.change_pct >= 0 else 'negative' }} val">{{ "{:+.2f}".format(idx.change_pct) }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     {% endif %}
 
     {% if market_chart_b64 %}
@@ -449,6 +458,7 @@ a:hover { text-decoration: underline; }
     </div>
     {% endif %}
 
+    <div class="articles-list">
     {% for article in economy_news %}
     <div class="article-card">
       {% if article.image %}
@@ -465,30 +475,29 @@ a:hover { text-decoration: underline; }
         {% if article.summary_zh or article.summary_en %}
         <div class="article-summary" data-zh="{{ article.summary_zh or article.summary_en }}" data-en="{{ article.summary_en or article.summary_zh }}">{{ article.summary_zh or article.summary_en }}</div>
         {% endif %}
-        <a href="{{ article.link }}" class="read-more" target="_blank">
-          <span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span>
-        </a>
+        <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
       </div>
     </div>
     {% endfor %}
+    </div>
   </div>
 
 </div>
 
-<!-- ── FOOTER ────────────────────────────────────────────────────────────────── -->
+<!-- ── FOOTER ────────────────────────────────────────────────────────── -->
 <div class="footer">
   <div class="footer-inner">
     <div class="footer-title">
       <span data-zh="每日全球要闻快报" data-en="Daily Global News Digest">每日全球要闻快报</span>
       &nbsp;·&nbsp;
-      <strong class="date-zh">{{ date_str }}</strong>
-      <strong class="date-en" style="display:none">{{ date_str_en }}</strong>
+      <span class="date-zh">{{ date_str }}</span>
+      <span class="date-en" style="display:none">{{ date_str_en }}</span>
     </div>
     <div class="footer-sources">
-      <span data-zh="数据来源：" data-en="Sources: ">数据来源：</span>Reuters · BBC · NY Times · The Guardian · MIT Tech Review · Ars Technica · PA News · CoinDesk · The Block · Blockworks · The Defiant · CoinGecko · yfinance · Yahoo Finance
+      <span data-zh="数据来源：" data-en="Sources: ">数据来源：</span>Reuters · BBC · NY Times · The Guardian · MIT Tech Review · Ars Technica · PA News · CoinDesk · The Block · Blockworks · The Defiant · CoinGecko · yfinance
     </div>
     <div class="footer-disclaimer">
-      <span data-zh="本报告由自动化程序生成，内容仅供参考，不构成投资建议。" data-en="Auto-generated for informational purposes only. Not investment advice.">本报告由自动化程序生成，内容仅供参考，不构成投资建议。</span>
+      <span data-zh="本报告由自动化程序生成，仅供参考，不构成投资建议。" data-en="Auto-generated for informational purposes only. Not investment advice.">本报告由自动化程序生成，仅供参考，不构成投资建议。</span>
     </div>
   </div>
 </div>
@@ -496,19 +505,15 @@ a:hover { text-decoration: underline; }
 <script>
 function setLang(lang) {
   document.querySelectorAll('[data-zh]').forEach(function(el) {
-    el.innerHTML = lang === 'en'
-      ? (el.getAttribute('data-en') || el.getAttribute('data-zh'))
-      : el.getAttribute('data-zh');
+    el.innerHTML = lang==='en' ? (el.getAttribute('data-en')||el.getAttribute('data-zh')) : el.getAttribute('data-zh');
   });
-  document.querySelectorAll('.date-zh').forEach(function(el){ el.style.display = lang==='en'?'none':''; });
-  document.querySelectorAll('.date-en').forEach(function(el){ el.style.display = lang==='en'?'':'none'; });
+  document.querySelectorAll('.date-zh').forEach(function(el){ el.style.display=lang==='en'?'none':''; });
+  document.querySelectorAll('.date-en').forEach(function(el){ el.style.display=lang==='en'?'':'none'; });
   document.getElementById('btn-zh').classList.toggle('active', lang==='zh');
   document.getElementById('btn-en').classList.toggle('active', lang==='en');
   try { localStorage.setItem('news_lang', lang); } catch(e){}
 }
-(function(){
-  try { var s = localStorage.getItem('news_lang'); if(s==='en') setLang('en'); } catch(e){}
-})();
+(function(){ try{ var s=localStorage.getItem('news_lang'); if(s==='en') setLang('en'); }catch(e){} })();
 </script>
 </body>
 </html>
