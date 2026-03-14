@@ -26,18 +26,18 @@ RSS_SOURCES = {
     'world': [
         {'name': '路透社',     'name_en': 'Reuters',        'lang': 'en', 'url': 'https://feeds.reuters.com/reuters/worldNews'},
         {'name': 'BBC世界',    'name_en': 'BBC World',       'lang': 'en', 'url': 'http://feeds.bbci.co.uk/news/world/rss.xml'},
-        {'name': '纽约时报',   'name_en': 'NY Times',        'lang': 'en', 'url': 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml'},
+        {'name': 'NPR新闻',    'name_en': 'NPR News',        'lang': 'en', 'url': 'https://feeds.npr.org/1004/rss.xml'},
         {'name': '卫报',       'name_en': 'The Guardian',    'lang': 'en', 'url': 'https://www.theguardian.com/world/rss'},
         {'name': '半岛电视台', 'name_en': 'Al Jazeera',      'lang': 'en', 'url': 'https://www.aljazeera.com/xml/rss/all.xml'},
     ],
 
     'ai': [
-        {'name': 'MIT技术评论','name_en': 'MIT Tech Review', 'lang': 'en', 'url': 'https://www.technologyreview.com/feed/'},
+        {'name': 'TechCrunch', 'name_en': 'TechCrunch',     'lang': 'en', 'url': 'https://techcrunch.com/feed/'},
         {'name': '路透社科技', 'name_en': 'Reuters Tech',    'lang': 'en', 'url': 'https://feeds.reuters.com/reuters/technologyNews'},
         {'name': 'BBC科技',    'name_en': 'BBC Tech',        'lang': 'en', 'url': 'http://feeds.bbci.co.uk/news/technology/rss.xml'},
         {'name': 'Ars Technica','name_en':'Ars Technica',    'lang': 'en', 'url': 'https://feeds.arstechnica.com/arstechnica/technology-lab'},
         {'name': 'The Verge',  'name_en': 'The Verge',       'lang': 'en', 'url': 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml'},
-        {'name': 'Wired',      'name_en': 'Wired',           'lang': 'en', 'url': 'https://www.wired.com/feed/tag/ai/latest/rss'},
+        {'name': 'VentureBeat','name_en': 'VentureBeat',     'lang': 'en', 'url': 'https://venturebeat.com/category/ai/feed/'},
     ],
 
     # 加密货币：PA News 优先（中文），其次英文权威媒体
@@ -55,7 +55,7 @@ RSS_SOURCES = {
         {'name': 'CNBC',       'name_en': 'CNBC',            'lang': 'en', 'url': 'https://www.cnbc.com/id/100003114/device/rss/rss.html'},
         {'name': 'BBC商业',    'name_en': 'BBC Business',    'lang': 'en', 'url': 'http://feeds.bbci.co.uk/news/business/rss.xml'},
         {'name': 'Yahoo财经',  'name_en': 'Yahoo Finance',   'lang': 'en', 'url': 'https://finance.yahoo.com/news/rssindex'},
-        {'name': '金融时报',   'name_en': 'Financial Times', 'lang': 'en', 'url': 'https://www.ft.com/rss/home/us'},
+        {'name': 'MarketWatch','name_en': 'MarketWatch',     'lang': 'en', 'url': 'https://feeds.content.dowjones.io/public/rss/mw_topstories'},
     ],
 }
 
