@@ -38,8 +38,16 @@ CONFIG_PATH = BASE_DIR / 'config.json'
 
 
 def load_config():
-    with open(CONFIG_PATH, encoding='utf-8') as f:
-        return json.load(f)
+    """加载配置，config.json 不存在时使用默认结构（依赖环境变量）"""
+    if CONFIG_PATH.exists():
+        with open(CONFIG_PATH, encoding='utf-8') as f:
+            return json.load(f)
+    # GitHub Actions 环境：config.json 不存在，返回空壳，由环境变量填充
+    return {
+        'email': {'sender': '', 'password': '', 'recipients': [],
+                  'smtp_host': 'smtp.gmail.com', 'smtp_port': 587},
+        'report': {'timezone': 'America/Los_Angeles', 'max_articles': 5, 'output_dir': 'output'}
+    }
 
 
 def html_to_pdf(html_path: Path, pdf_path: Path):
@@ -85,9 +93,9 @@ def run():
     if os.getenv('GMAIL_RECIPIENTS'):
         email_cfg['recipients'] = [r.strip() for r in os.getenv('GMAIL_RECIPIENTS').split(',')]
 
-    # 校验邮件配置是否已填写
-    if 'your-email' in email_cfg.get('sender', '') and not os.getenv('GMAIL_SENDER'):
-        logger.error("请先在 config.json 中填写真实的 Gmail 地址和 App Password")
+    # 校验
+    if not email_cfg.get('sender'):
+        logger.error("邮件配置缺失：请填写 config.json 或设置 GMAIL_SENDER 环境变量")
         return False
 
     report_cfg = config.get('report', {})
