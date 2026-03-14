@@ -196,17 +196,20 @@ td{{padding:10px 16px;border-bottom:1px solid #2a2a50;}}
         logger.warning(f"index.html 生成失败: {e}")
 
     # ── 发送邮件 ───────────────────────────────────────────────────
-    try:
-        from email_sender import send_report_email
-        send_report_email(
-            email_cfg  = email_cfg,
-            date_str   = date_str,
-            la_time    = la_time,
-            pdf_path   = pdf_path if pdf_ok else None,
-        )
-    except Exception as e:
-        logger.error(f"邮件发送失败: {e}\n{traceback.format_exc()}")
-        return False
+    if os.getenv('SKIP_EMAIL', '').lower() in ('1', 'true', 'yes'):
+        logger.info("SKIP_EMAIL=true，跳过邮件发送")
+    else:
+        try:
+            from email_sender import send_report_email
+            send_report_email(
+                email_cfg  = email_cfg,
+                date_str   = date_str,
+                la_time    = la_time,
+                pdf_path   = pdf_path if pdf_ok else None,
+            )
+        except Exception as e:
+            logger.error(f"邮件发送失败: {e}\n{traceback.format_exc()}")
+            return False
 
     logger.info("全部完成！")
     logger.info("=" * 60)

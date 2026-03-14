@@ -45,6 +45,7 @@ jobs:
           GMAIL_SENDER:     ${{ secrets.GMAIL_SENDER }}
           GMAIL_PASSWORD:   ${{ secrets.GMAIL_PASSWORD }}
           GMAIL_RECIPIENTS: ${{ secrets.GMAIL_RECIPIENTS }}
+          SKIP_EMAIL:       "true"
         run: python main.py
 
       - name: 部署到 GitHub Pages
