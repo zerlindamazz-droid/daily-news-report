@@ -32,8 +32,8 @@ RSS_SOURCES = {
     ],
 
     'ai': [
+        {'name': 'MIT技术评论','name_en': 'MIT Tech Review', 'lang': 'en', 'url': 'https://www.technologyreview.com/feed/'},
         {'name': 'TechCrunch', 'name_en': 'TechCrunch',     'lang': 'en', 'url': 'https://techcrunch.com/feed/'},
-        {'name': 'ZDNet',      'name_en': 'ZDNet',           'lang': 'en', 'url': 'https://www.zdnet.com/news/rss.xml'},
         {'name': 'Engadget',   'name_en': 'Engadget',        'lang': 'en', 'url': 'https://www.engadget.com/rss.xml'},
         {'name': 'Ars Technica','name_en':'Ars Technica',    'lang': 'en', 'url': 'https://feeds.arstechnica.com/arstechnica/technology-lab'},
         {'name': 'The Verge',  'name_en': 'The Verge',       'lang': 'en', 'url': 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml'},

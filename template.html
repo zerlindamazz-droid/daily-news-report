@@ -317,6 +317,72 @@ a:hover { text-decoration: underline; }
     </div>
   </div>
 
+  <!-- ── ECONOMY ───────────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-left">
+        <span class="section-icon">📊</span>
+        <span class="section-title" data-zh="全球股市与经济" data-en="Markets & Economy">全球股市与经济</span>
+      </div>
+    </div>
+
+    {% if stock_indices %}
+    <div class="market-table-wrap">
+      <table class="market-table">
+        <thead>
+          <tr>
+            <th data-zh="指数" data-en="Index">指数</th>
+            <th data-zh="全称" data-en="Name">全称</th>
+            <th data-zh="价格" data-en="Price">价格</th>
+            <th data-zh="涨跌" data-en="Change">涨跌</th>
+            <th data-zh="涨跌幅" data-en="Change %">涨跌幅</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for idx in stock_indices %}
+          <tr>
+            <td class="name-cn" data-zh="{{ idx.name_cn }}" data-en="{{ idx.name_en }}">{{ idx.name_cn }}</td>
+            <td class="name-en">{{ idx.name_en }}</td>
+            <td class="val">{{ "{:,.2f}".format(idx.value) }}</td>
+            <td class="{{ 'positive' if idx.change >= 0 else 'negative' }} val">{{ "{:+,.2f}".format(idx.change) }}</td>
+            <td class="{{ 'positive' if idx.change_pct >= 0 else 'negative' }} val">{{ "{:+.2f}".format(idx.change_pct) }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if market_chart_b64 %}
+    <div class="chart-wrap">
+      <img src="data:image/png;base64,{{ market_chart_b64 }}" alt="market chart">
+    </div>
+    {% endif %}
+
+    <div class="articles-list">
+    {% for article in economy_news %}
+    <div class="article-card">
+      {% if article.image %}
+      <div class="article-img-wrap">
+        <img src="{{ article.image }}" alt="" onerror="this.parentElement.style.display='none'">
+      </div>
+      {% endif %}
+      <div class="article-body">
+        <div class="article-meta">
+          <span class="badge badge-economy" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
+          {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
+        </div>
+        <div class="article-title" data-zh="{{ article.title_zh or article.title }}" data-en="{{ article.title_en or article.title }}">{{ article.title_zh or article.title }}</div>
+        {% if article.summary_zh or article.summary_en %}
+        <div class="article-summary" data-zh="{{ article.summary_zh }}" data-en="{{ article.summary_en }}">{{ article.summary_zh or article.summary_en }}</div>
+        {% endif %}
+        <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
+      </div>
+    </div>
+    {% endfor %}
+    </div>
+  </div>
+
   <!-- ── AI & TECH ─────────────────────────────────────────────────── -->
   <div class="section">
     <div class="section-header">
@@ -416,71 +482,6 @@ a:hover { text-decoration: underline; }
     </div>
   </div>
 
-  <!-- ── ECONOMY ───────────────────────────────────────────────────── -->
-  <div class="section" style="margin-bottom:0">
-    <div class="section-header">
-      <div class="section-left">
-        <span class="section-icon">📊</span>
-        <span class="section-title" data-zh="全球股市与经济" data-en="Markets & Economy">全球股市与经济</span>
-      </div>
-    </div>
-
-    {% if stock_indices %}
-    <div class="market-table-wrap">
-      <table class="market-table">
-        <thead>
-          <tr>
-            <th data-zh="指数" data-en="Index">指数</th>
-            <th data-zh="全称" data-en="Name">全称</th>
-            <th data-zh="价格" data-en="Price">价格</th>
-            <th data-zh="涨跌" data-en="Change">涨跌</th>
-            <th data-zh="涨跌幅" data-en="Change %">涨跌幅</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for idx in stock_indices %}
-          <tr>
-            <td class="name-cn" data-zh="{{ idx.name_cn }}" data-en="{{ idx.name_en }}">{{ idx.name_cn }}</td>
-            <td class="name-en">{{ idx.name_en }}</td>
-            <td class="val">{{ "{:,.2f}".format(idx.value) }}</td>
-            <td class="{{ 'positive' if idx.change >= 0 else 'negative' }} val">{{ "{:+,.2f}".format(idx.change) }}</td>
-            <td class="{{ 'positive' if idx.change_pct >= 0 else 'negative' }} val">{{ "{:+.2f}".format(idx.change_pct) }}%</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% endif %}
-
-    {% if market_chart_b64 %}
-    <div class="chart-wrap">
-      <img src="data:image/png;base64,{{ market_chart_b64 }}" alt="market chart">
-    </div>
-    {% endif %}
-
-    <div class="articles-list">
-    {% for article in economy_news %}
-    <div class="article-card">
-      {% if article.image %}
-      <div class="article-img-wrap">
-        <img src="{{ article.image }}" alt="" onerror="this.parentElement.style.display='none'">
-      </div>
-      {% endif %}
-      <div class="article-body">
-        <div class="article-meta">
-          <span class="badge badge-economy" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
-          {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
-        </div>
-        <div class="article-title" data-zh="{{ article.title_zh or article.title }}" data-en="{{ article.title_en or article.title }}">{{ article.title_zh or article.title }}</div>
-        {% if article.summary_zh or article.summary_en %}
-        <div class="article-summary" data-zh="{{ article.summary_zh }}" data-en="{{ article.summary_en }}">{{ article.summary_zh or article.summary_en }}</div>
-        {% endif %}
-        <a href="{{ article.link }}" class="read-more" target="_blank"><span data-zh="阅读原文 →" data-en="Read More →">阅读原文 →</span></a>
-      </div>
-    </div>
-    {% endfor %}
-    </div>
-  </div>
 
 </div>
 
