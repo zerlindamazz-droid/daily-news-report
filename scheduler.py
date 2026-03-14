@@ -27,7 +27,7 @@ logging.basicConfig(
 logger = logging.getLogger('scheduler')
 
 # ─── 配置 ─────────────────────────────────────────────────────────────────────
-TARGET_HOUR   = 7    # 洛杉矶时间 07
+TARGET_HOUR   = 6    # 洛杉矶时间 06
 TARGET_MINUTE = 30   # :30
 LA_TZ         = pytz.timezone('America/Los_Angeles')
 CHECK_INTERVAL = 30  # 每 30 秒检查一次

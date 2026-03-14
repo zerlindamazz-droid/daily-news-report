@@ -2,8 +2,8 @@ name: 每日全球要闻快报
 
 on:
   schedule:
-    - cron: '30 14 * * *'   # 7:30 AM 洛杉矶 PDT (UTC-7, 夏令时 3月-11月)
-    - cron: '30 15 * * *'   # 7:30 AM 洛杉矶 PST (UTC-8, 冬令时 11月-3月)
+    - cron: '30 13 * * *'   # 6:30 AM 洛杉矶 PDT (UTC-7, 夏令时 3月-11月)
+    - cron: '30 14 * * *'   # 6:30 AM 洛杉矶 PST (UTC-8, 冬令时 11月-3月)
   workflow_dispatch:         # 允许手动触发
 
 permissions:
