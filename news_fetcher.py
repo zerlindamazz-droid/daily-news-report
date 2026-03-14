@@ -42,10 +42,12 @@ RSS_SOURCES = {
 
     # 加密货币：PA News 优先（中文），其次英文权威媒体
     'crypto': [
-        {'name': 'PA News',    'name_en': 'PA News',         'lang': 'zh', 'url': 'https://www.panewslab.com/rss.xml'},
-        {'name': 'CoinDesk',   'name_en': 'CoinDesk',        'lang': 'en', 'url': 'https://www.coindesk.com/arc/outboundfeeds/rss/'},
-        {'name': 'The Block',  'name_en': 'The Block',       'lang': 'en', 'url': 'https://www.theblock.co/rss.xml'},
-        {'name': 'CoinTelegraph','name_en':'CoinTelegraph',  'lang': 'en', 'url': 'https://cointelegraph.com/rss'},
+        {'name': 'PA News',      'name_en': 'PA News',       'lang': 'zh', 'url': 'https://www.panewslab.com/rss.xml'},
+        {'name': 'CoinDesk',     'name_en': 'CoinDesk',      'lang': 'en', 'url': 'https://www.coindesk.com/arc/outboundfeeds/rss/'},
+        {'name': 'The Block',    'name_en': 'The Block',     'lang': 'en', 'url': 'https://www.theblock.co/rss.xml'},
+        {'name': 'Blockworks',   'name_en': 'Blockworks',    'lang': 'en', 'url': 'https://blockworks.co/feed'},
+        {'name': 'The Defiant',  'name_en': 'The Defiant',   'lang': 'en', 'url': 'https://thedefiant.io/api/rss'},
+        {'name': 'CoinTelegraph','name_en': 'CoinTelegraph', 'lang': 'en', 'url': 'https://cointelegraph.com/rss'},
     ],
 
     'economy': [
