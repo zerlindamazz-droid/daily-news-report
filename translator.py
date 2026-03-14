@@ -44,8 +44,11 @@ def enrich_articles_with_bilingual_summary(all_news):
             lang    = article.get('lang', 'en')
             summary = article.get('summary', '') or ''
 
+            title = article.get('title', '') or ''
+
             if lang == 'zh':
                 # PA News：中文原文 + 翻译成英文
+                article['title_zh'] = title
                 article['summary_zh'] = summary
                 if summary:
                     article['summary_en'] = _translate(summary, target='en')
@@ -55,6 +58,11 @@ def enrich_articles_with_bilingual_summary(all_news):
             else:
                 # 英文来源：英文原文 + 翻译成中文
                 article['summary_en'] = summary
+                if title:
+                    article['title_zh'] = _translate(title, target='zh-CN')
+                    time.sleep(DELAY)
+                else:
+                    article['title_zh'] = ''
                 if summary:
                     article['summary_zh'] = _translate(summary, target='zh-CN')
                     time.sleep(DELAY)

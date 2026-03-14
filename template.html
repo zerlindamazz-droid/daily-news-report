@@ -169,11 +169,14 @@ a:hover { text-decoration: underline; }
 .badge-economy{ background: var(--eco-bg);    color: var(--eco-c);    border-color: var(--eco-bd); }
 
 .article-date { font-size: 12px; color: var(--subtle); }
-.article-title {
-  font-size: 20px; font-weight: 600; color: var(--text);
+.article-title-zh {
+  font-size: 20px; font-weight: 700; color: var(--text);
   line-height: 1.45; letter-spacing: -0.1px;
 }
-.article-summary-en { font-size: 16px; color: var(--muted); line-height: 1.65; }
+.article-title-en {
+  font-size: 14px; color: var(--muted); line-height: 1.4; margin-top: 3px;
+}
+.article-summary-en { font-size: 16px; color: var(--muted); line-height: 1.65; margin-top: 4px; }
 .article-summary-zh {
   font-size: 16px; color: var(--text); line-height: 1.7;
   margin-top: 6px; padding-top: 6px;
@@ -311,7 +314,8 @@ a:hover { text-decoration: underline; }
           <span class="badge badge-world" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
-        <div class="article-title">{{ article.title }}</div>
+        {% if article.title_zh %}<div class="article-title-zh">{{ article.title_zh }}</div>{% endif %}
+        <div class="article-title-en">{{ article.title }}</div>
         {% if article.summary_en %}
         <div class="article-summary-en">{{ article.summary_en }}</div>
         {% endif %}
@@ -347,7 +351,8 @@ a:hover { text-decoration: underline; }
           <span class="badge badge-ai" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
-        <div class="article-title">{{ article.title }}</div>
+        {% if article.title_zh %}<div class="article-title-zh">{{ article.title_zh }}</div>{% endif %}
+        <div class="article-title-en">{{ article.title }}</div>
         {% if article.summary_en %}
         <div class="article-summary-en">{{ article.summary_en }}</div>
         {% endif %}
@@ -416,7 +421,8 @@ a:hover { text-decoration: underline; }
           <span class="badge badge-crypto" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
-        <div class="article-title">{{ article.title }}</div>
+        {% if article.title_zh %}<div class="article-title-zh">{{ article.title_zh }}</div>{% endif %}
+        <div class="article-title-en">{{ article.title }}</div>
         {% if article.summary_en %}
         <div class="article-summary-en">{{ article.summary_en }}</div>
         {% endif %}
@@ -485,7 +491,8 @@ a:hover { text-decoration: underline; }
           <span class="badge badge-economy" data-zh="{{ article.source }}" data-en="{{ article.source_en }}">{{ article.source }}</span>
           {% if article.published %}<span class="article-date">{{ article.published[:16] }}</span>{% endif %}
         </div>
-        <div class="article-title">{{ article.title }}</div>
+        {% if article.title_zh %}<div class="article-title-zh">{{ article.title_zh }}</div>{% endif %}
+        <div class="article-title-en">{{ article.title }}</div>
         {% if article.summary_en %}
         <div class="article-summary-en">{{ article.summary_en }}</div>
         {% endif %}
