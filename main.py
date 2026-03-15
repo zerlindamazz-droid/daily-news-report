@@ -121,29 +121,44 @@ def run():
         logger.error(f"新闻抓取失败: {e}\n{traceback.format_exc()}")
         news_data = {'world': [], 'ai': [], 'crypto': [], 'economy': []}
 
-    # ── 去重：过滤掉过去7天已出现过的新闻 ────────────────────────────
+    # ── 去重：按 URL + 标题 过滤过去7天已出现的新闻 ──────────────────
     seen_path = out_dir / 'seen_links.json'
     try:
         import json as _json
         from datetime import timedelta
+
         seen_data = _json.loads(seen_path.read_text(encoding='utf-8')) if seen_path.exists() else {}
         cutoff = (now - timedelta(days=7)).strftime('%Y-%m-%d')
-        # 清理7天前的记录
         seen_data = {k: v for k, v in seen_data.items() if v >= cutoff}
-        seen_links = set(seen_data.keys())
+        seen_keys = set(seen_data.keys())   # 包含 URL 和标题 key
+
+        def _title_key(title):
+            """标题归一化 key（小写+去空格，取前60字符）"""
+            return ''.join(title.lower().split())[:60]
 
         total_before = sum(len(v) for v in news_data.values())
         for cat in news_data:
-            news_data[cat] = [a for a in news_data[cat] if a.get('link', '') not in seen_links]
+            filtered = []
+            for a in news_data[cat]:
+                url = a.get('link', '')
+                tk  = _title_key(a.get('title', ''))
+                if url in seen_keys or tk in seen_keys:
+                    continue
+                filtered.append(a)
+            news_data[cat] = filtered
         total_after = sum(len(v) for v in news_data.values())
-        logger.info(f"去重完成：过滤 {total_before - total_after} 条已出现过的新闻")
+        logger.info(f"去重完成：过滤 {total_before - total_after} 条已出现过的新闻，剩余 {total_after} 条")
 
-        # 记录本次新闻链接
+        # 记录本次新闻的 URL 和标题 key
         for cat in news_data:
             for a in news_data[cat]:
                 if a.get('link'):
                     seen_data[a['link']] = date_tag
+                tk = _title_key(a.get('title', ''))
+                if tk:
+                    seen_data[tk] = date_tag
         seen_path.write_text(_json.dumps(seen_data, ensure_ascii=False, indent=2), encoding='utf-8')
+        logger.info(f"seen_links.json 已更新，共 {len(seen_data)} 条记录")
     except Exception as e:
         logger.warning(f"去重处理失败（跳过）: {e}")
 
