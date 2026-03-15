@@ -46,7 +46,8 @@ jobs:
           git fetch origin gh-pages --depth=1 2>/dev/null || true
           if git rev-parse origin/gh-pages >/dev/null 2>&1; then
             git archive origin/gh-pages | tar -x --wildcards 'report_*.html' -C output/ 2>/dev/null || true
-            git archive origin/gh-pages | tar -x 'seen_links.json' -C output/ 2>/dev/null || true
+            git show origin/gh-pages:seen_links.json > output/seen_links.json 2>/dev/null || true
+            echo "seen_links.json lines: $(wc -l < output/seen_links.json 2>/dev/null || echo 0)"
           fi
 
       - name: 生成报告并发送邮件
