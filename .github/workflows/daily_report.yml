@@ -2,7 +2,8 @@ name: 每日全球要闻快报
 
 on:
   schedule:
-    - cron: '0 13 * * *'    # ~6:00 AM 洛杉矶 PDT (UTC-7, 3月-11月)
+    - cron: '0 13 * * *'    # 6:00 AM 洛杉矶 PDT (UTC-7, 夏令时 3月-11月)
+    - cron: '0 14 * * *'    # 6:00 AM 洛杉矶 PST (UTC-8, 冬令时 11月-3月)
   workflow_dispatch:
 
 permissions:
@@ -31,22 +32,34 @@ jobs:
       - name: 安装 Playwright Chromium
         run: playwright install chromium --with-deps
 
-      - name: 恢复历史报告
+      - name: 检查洛杉矶时间（防止双发，仅6点执行）
+        id: check_time
+        run: |
+          LA_HOUR=$(TZ='America/Los_Angeles' date +%H)
+          echo "la_hour=$LA_HOUR"
+          echo "la_hour=$LA_HOUR" >> $GITHUB_OUTPUT
+
+      - name: 恢复历史数据（报告 + 去重记录）
+        if: steps.check_time.outputs.la_hour == '06' || github.event_name == 'workflow_dispatch'
         run: |
           mkdir -p output
           git fetch origin gh-pages --depth=1 2>/dev/null || true
           if git rev-parse origin/gh-pages >/dev/null 2>&1; then
             git archive origin/gh-pages | tar -x --wildcards 'report_*.html' -C output/ 2>/dev/null || true
+            git archive origin/gh-pages | tar -x 'seen_links.json' -C output/ 2>/dev/null || true
           fi
 
       - name: 生成报告并发送邮件
+        if: steps.check_time.outputs.la_hour == '06' || github.event_name == 'workflow_dispatch'
         env:
           GMAIL_SENDER:     ${{ secrets.GMAIL_SENDER }}
           GMAIL_PASSWORD:   ${{ secrets.GMAIL_PASSWORD }}
           GMAIL_RECIPIENTS: ${{ secrets.GMAIL_RECIPIENTS }}
+          SKIP_EMAIL:       "true"
         run: python main.py
 
       - name: 部署到 GitHub Pages
+        if: steps.check_time.outputs.la_hour == '06' || github.event_name == 'workflow_dispatch'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
