@@ -333,6 +333,7 @@ a:hover { text-decoration: underline; }
           <tr>
             <th data-zh="指数" data-en="Index">指数</th>
             <th data-zh="全称" data-en="Name">全称</th>
+            <th data-zh="日期" data-en="Date">日期</th>
             <th data-zh="价格" data-en="Price">价格</th>
             <th data-zh="涨跌" data-en="Change">涨跌</th>
             <th data-zh="涨跌幅" data-en="Change %">涨跌幅</th>
@@ -343,6 +344,7 @@ a:hover { text-decoration: underline; }
           <tr>
             <td class="name-cn" data-zh="{{ idx.name_cn }}" data-en="{{ idx.name_en }}">{{ idx.name_cn }}</td>
             <td class="name-en">{{ idx.name_en }}</td>
+            <td class="val" style="color:var(--muted);font-size:13px;">{{ idx.date }}</td>
             <td class="val">{{ "{:,.2f}".format(idx.value) }}</td>
             <td class="{{ 'positive' if idx.change >= 0 else 'negative' }} val">{{ "{:+,.2f}".format(idx.change) }}</td>
             <td class="{{ 'positive' if idx.change_pct >= 0 else 'negative' }} val">{{ "{:+.2f}".format(idx.change_pct) }}%</td>
@@ -450,6 +452,11 @@ a:hover { text-decoration: underline; }
       </div>
       {% endfor %}
     </div>
+    {% if crypto_fetched_at %}
+    <div style="text-align:right;font-size:12px;color:var(--subtle);margin-top:-6px;margin-bottom:8px;">
+      <span data-zh="实时数据 · 更新于" data-en="Live data · Updated">实时数据 · 更新于</span> {{ crypto_fetched_at }}
+    </div>
+    {% endif %}
     {% endif %}
 
     {% if crypto_chart_b64 %}

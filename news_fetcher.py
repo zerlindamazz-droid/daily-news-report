@@ -103,7 +103,7 @@ def _clean(html_text, max_len=280):
     return text
 
 
-def _fetch_source(source, limit=4):
+def _fetch_source(source, limit=20):
     articles = []
     try:
         feed = feedparser.parse(source['url'], request_headers=HEADERS)
@@ -141,29 +141,28 @@ def _deduplicate(articles):
     return unique
 
 
+# 最终展示条数上限（main.py 在去重后截取）
+DISPLAY_LIMITS = {
+    'world':   6,
+    'ai':      5,
+    'crypto':  5,
+    'economy': 8,
+}
+
+
 def fetch_all_news(max_per_category=5):
     """
-    抓取所有类别新闻。
-    - world/economy：每个来源最多 2 条，保证来源多样化，最多取 8 条
-    - ai/crypto：每个来源最多 2 条，最多取 max_per_category 条
+    抓取所有类别新闻，返回完整的原始池（每来源最多20条）。
+    跨日去重和最终截取在 main.py 完成，确保去重后仍有足够新文章填满版面。
     """
-    # 每个类别的配置：(每来源条数上限, 总条数上限)
-    CATEGORY_CONFIG = {
-        'world':   (1, 6),   # 每来源1条，共6条（6个不同来源）
-        'ai':      (2, max_per_category),
-        'crypto':  (2, max_per_category),
-        'economy': (2, 8),
-    }
-
     all_news = {}
     for category, sources in RSS_SOURCES.items():
-        per_src, total_max = CATEGORY_CONFIG.get(category, (2, max_per_category))
         pool = []
         for src in sources:
-            fetched = _fetch_source(src, limit=per_src)
+            fetched = _fetch_source(src, limit=20)  # 每源最多20条，RSS通常有10-30条
             pool.extend(fetched)
 
-        pool = _deduplicate(pool)
+        pool = _deduplicate(pool)  # 仅去除本次抓取内的重复
 
         # 加密货币：PA News (lang=zh) 优先排前面
         if category == 'crypto':
@@ -171,7 +170,7 @@ def fetch_all_news(max_per_category=5):
             rest = [a for a in pool if a['lang'] != 'zh']
             pool = pa + rest
 
-        all_news[category] = pool[:total_max]
-        logger.info(f"[{category}] 共 {len(all_news[category])} 篇")
+        all_news[category] = pool
+        logger.info(f"[{category}] 抓取原始池 {len(pool)} 篇（跨日去重前）")
 
     return all_news

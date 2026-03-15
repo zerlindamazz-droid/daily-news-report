@@ -130,7 +130,9 @@ def run():
         seen_data = _json.loads(seen_path.read_text(encoding='utf-8')) if seen_path.exists() else {}
         cutoff = (now - timedelta(days=7)).strftime('%Y-%m-%d')
         seen_data = {k: v for k, v in seen_data.items() if v >= cutoff}
-        seen_keys = set(seen_data.keys())   # 包含 URL 和标题 key
+        # 只过滤"昨天及之前"出现过的新闻，今天的条目不参与过滤
+        # 这样同一天多次生成报告不会把当天的新闻全部挡掉
+        seen_keys = {k for k, v in seen_data.items() if v < date_tag}
 
         def _title_key(title):
             """标题归一化 key（小写+去空格，取前60字符）"""
@@ -148,6 +150,16 @@ def run():
             news_data[cat] = filtered
         total_after = sum(len(v) for v in news_data.values())
         logger.info(f"去重完成：过滤 {total_before - total_after} 条已出现过的新闻，剩余 {total_after} 条")
+
+        # 去重后截取到展示上限
+        from news_fetcher import DISPLAY_LIMITS
+        display_limits = {'world': 6, 'ai': max_art, 'crypto': max_art, 'economy': 8}
+        display_limits.update(DISPLAY_LIMITS)
+        for cat, limit in display_limits.items():
+            if cat in news_data:
+                news_data[cat] = news_data[cat][:limit]
+        total_display = sum(len(v) for v in news_data.values())
+        logger.info(f"截取后：共展示 {total_display} 条新闻")
 
         # 记录本次新闻的 URL 和标题 key
         for cat in news_data:

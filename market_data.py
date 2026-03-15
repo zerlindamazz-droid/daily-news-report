@@ -10,6 +10,8 @@ import base64
 import logging
 import requests
 import yfinance as yf
+from datetime import datetime
+import pytz
 import matplotlib
 matplotlib.use('Agg')  # 非交互式后端，必须在 import pyplot 之前设置
 import matplotlib.pyplot as plt
@@ -77,6 +79,7 @@ def get_crypto_prices():
         resp.raise_for_status()
         data = resp.json()
 
+        fetched_at = datetime.now(pytz.utc).strftime('%Y-%m-%d %H:%M UTC')
         result = []
         for coin_id, symbol, name_cn in CRYPTO_LIST:
             if coin_id not in data:
@@ -89,6 +92,7 @@ def get_crypto_prices():
                 'change_24h': c.get('usd_24h_change', 0) or 0,
                 'change_7d':  c.get('usd_7d_change', 0) or 0,
                 'market_cap': c.get('usd_market_cap', 0) or 0,
+                'fetched_at': fetched_at,
             })
         logger.info(f"加密货币数据：获取 {len(result)} 条")
         return result
@@ -110,6 +114,7 @@ def get_stock_indices():
             prev    = float(hist['Close'].iloc[-2]) if len(hist) >= 2 else current
             change     = current - prev
             change_pct = (change / prev * 100) if prev else 0
+            date_str = hist.index[-1].strftime('%m/%d')
             indices.append({
                 'ticker':     ticker,
                 'name_cn':    name_cn,
@@ -117,6 +122,7 @@ def get_stock_indices():
                 'value':      current,
                 'change':     change,
                 'change_pct': change_pct,
+                'date':       date_str,
             })
         except Exception as e:
             logger.warning(f"股指 {ticker} 获取失败: {e}")
@@ -232,9 +238,12 @@ def get_all_market_data():
     crypto_chart   = generate_crypto_chart(crypto_prices)
     market_chart   = generate_market_chart(stock_indices)
 
+    crypto_fetched_at = crypto_prices[0]['fetched_at'] if crypto_prices else ''
+
     return {
         'crypto_prices':    crypto_prices,
         'stock_indices':    stock_indices,
         'crypto_chart_b64': crypto_chart,
         'market_chart_b64': market_chart,
+        'crypto_fetched_at': crypto_fetched_at,
     }

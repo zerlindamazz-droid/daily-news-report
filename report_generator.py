@@ -102,10 +102,11 @@ def generate_html_report(news_data, market_data, timezone='America/Los_Angeles')
         ai_news         = news_data.get('ai', []),
         crypto_news     = news_data.get('crypto', []),
         economy_news    = news_data.get('economy', []),
-        crypto_prices   = market_data.get('crypto_prices', []),
-        stock_indices   = market_data.get('stock_indices', []),
-        crypto_chart_b64= market_data.get('crypto_chart_b64', ''),
-        market_chart_b64= market_data.get('market_chart_b64', ''),
+        crypto_prices    = market_data.get('crypto_prices', []),
+        stock_indices    = market_data.get('stock_indices', []),
+        crypto_chart_b64 = market_data.get('crypto_chart_b64', ''),
+        market_chart_b64 = market_data.get('market_chart_b64', ''),
+        crypto_fetched_at= market_data.get('crypto_fetched_at', ''),
     )
 
     logger.info("HTML 报告生成完成")
