@@ -29,6 +29,7 @@ RSS_SOURCES = {
         {'name': 'NPR新闻',    'name_en': 'NPR News',        'lang': 'en', 'url': 'https://feeds.npr.org/1004/rss.xml'},
         {'name': '卫报',       'name_en': 'The Guardian',    'lang': 'en', 'url': 'https://www.theguardian.com/world/rss'},
         {'name': '半岛电视台', 'name_en': 'Al Jazeera',      'lang': 'en', 'url': 'https://www.aljazeera.com/xml/rss/all.xml'},
+        {'name': 'ABC新闻',    'name_en': 'ABC News',        'lang': 'en', 'url': 'https://feeds.abcnews.com/abcnews/internationalheadlines'},
     ],
 
     'ai': [
@@ -148,7 +149,7 @@ def fetch_all_news(max_per_category=5):
     """
     # 每个类别的配置：(每来源条数上限, 总条数上限)
     CATEGORY_CONFIG = {
-        'world':   (2, 8),
+        'world':   (1, 6),   # 每来源1条，共6条（6个不同来源）
         'ai':      (2, max_per_category),
         'crypto':  (2, max_per_category),
         'economy': (2, 8),

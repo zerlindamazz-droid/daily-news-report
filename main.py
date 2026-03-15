@@ -121,6 +121,32 @@ def run():
         logger.error(f"新闻抓取失败: {e}\n{traceback.format_exc()}")
         news_data = {'world': [], 'ai': [], 'crypto': [], 'economy': []}
 
+    # ── 去重：过滤掉过去7天已出现过的新闻 ────────────────────────────
+    seen_path = out_dir / 'seen_links.json'
+    try:
+        import json as _json
+        from datetime import timedelta
+        seen_data = _json.loads(seen_path.read_text(encoding='utf-8')) if seen_path.exists() else {}
+        cutoff = (now - timedelta(days=7)).strftime('%Y-%m-%d')
+        # 清理7天前的记录
+        seen_data = {k: v for k, v in seen_data.items() if v >= cutoff}
+        seen_links = set(seen_data.keys())
+
+        total_before = sum(len(v) for v in news_data.values())
+        for cat in news_data:
+            news_data[cat] = [a for a in news_data[cat] if a.get('link', '') not in seen_links]
+        total_after = sum(len(v) for v in news_data.values())
+        logger.info(f"去重完成：过滤 {total_before - total_after} 条已出现过的新闻")
+
+        # 记录本次新闻链接
+        for cat in news_data:
+            for a in news_data[cat]:
+                if a.get('link'):
+                    seen_data[a['link']] = date_tag
+        seen_path.write_text(_json.dumps(seen_data, ensure_ascii=False, indent=2), encoding='utf-8')
+    except Exception as e:
+        logger.warning(f"去重处理失败（跳过）: {e}")
+
     # ── 生成双语摘要 ───────────────────────────────────────────────
     try:
         from translator import enrich_articles_with_bilingual_summary

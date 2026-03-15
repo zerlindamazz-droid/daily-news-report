@@ -2,8 +2,7 @@ name: 每日全球要闻快报
 
 on:
   schedule:
-    - cron: '0 13 * * *'    # 6:00 AM 洛杉矶 PDT (UTC-7, 夏令时 3月-11月)
-    - cron: '0 14 * * *'    # 6:00 AM 洛杉矶 PST (UTC-8, 冬令时 11月-3月)
+    - cron: '0 13 * * *'    # ~6:00 AM 洛杉矶 PDT (UTC-7, 3月-11月)
   workflow_dispatch:         # 允许手动触发
 
 permissions:
@@ -46,6 +45,7 @@ jobs:
           git fetch origin gh-pages --depth=1 2>/dev/null || true
           if git rev-parse origin/gh-pages >/dev/null 2>&1; then
             git archive origin/gh-pages | tar -x --wildcards 'report_*.html' -C output/ 2>/dev/null || true
+            git archive origin/gh-pages | tar -x --wildcards 'seen_links.json' -C output/ 2>/dev/null || true
           fi
 
       - name: 生成报告并发送邮件
