@@ -31,25 +31,15 @@ jobs:
       - name: 安装 Playwright Chromium
         run: playwright install chromium --with-deps
 
-      - name: 检查洛杉矶时间（仅6点执行，防止双发）
-        id: check_time
-        run: |
-          LA_HOUR=$(TZ='America/Los_Angeles' date +%H)
-          echo "la_hour=$LA_HOUR"
-          echo "la_hour=$LA_HOUR" >> $GITHUB_OUTPUT
-
       - name: 恢复历史报告（用于生成 index.html）
-        if: steps.check_time.outputs.la_hour == '06' || github.event_name == 'workflow_dispatch'
         run: |
           mkdir -p output
           git fetch origin gh-pages --depth=1 2>/dev/null || true
           if git rev-parse origin/gh-pages >/dev/null 2>&1; then
             git archive origin/gh-pages | tar -x --wildcards 'report_*.html' -C output/ 2>/dev/null || true
-            git archive origin/gh-pages | tar -x --wildcards 'seen_links.json' -C output/ 2>/dev/null || true
           fi
 
       - name: 生成报告并发送邮件
-        if: steps.check_time.outputs.la_hour == '06' || github.event_name == 'workflow_dispatch'
         env:
           GMAIL_SENDER:     ${{ secrets.GMAIL_SENDER }}
           GMAIL_PASSWORD:   ${{ secrets.GMAIL_PASSWORD }}
@@ -57,10 +47,9 @@ jobs:
         run: python main.py
 
       - name: 部署到 GitHub Pages
-        if: steps.check_time.outputs.la_hour == '06' || github.event_name == 'workflow_dispatch'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir:  ./output
-          keep_files:   true          # 保留历史报告
+          keep_files:   true
           commit_message: "报告 $(date +%Y-%m-%d)"
