@@ -151,6 +151,18 @@ def run():
         total_after = sum(len(v) for v in news_data.values())
         logger.info(f"去重完成：过滤 {total_before - total_after} 条已出现过的新闻，剩余 {total_after} 条")
 
+        # 每来源最多保留2条，保证来源多样性
+        MAX_PER_SOURCE = 2
+        for cat in news_data:
+            source_count: dict = {}
+            diverse = []
+            for a in news_data[cat]:
+                src = a.get('source', '')
+                if source_count.get(src, 0) < MAX_PER_SOURCE:
+                    diverse.append(a)
+                    source_count[src] = source_count.get(src, 0) + 1
+            news_data[cat] = diverse
+
         # 去重后截取到展示上限
         from news_fetcher import DISPLAY_LIMITS
         display_limits = {'world': 6, 'ai': max_art, 'crypto': max_art, 'economy': 8}
