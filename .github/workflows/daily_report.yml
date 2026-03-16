@@ -32,18 +32,36 @@ jobs:
       - name: 安装 Playwright Chromium
         run: playwright install chromium --with-deps
 
-      - name: 检查洛杉矶时间（防止双发，仅6点执行）
-        id: check_time
+      - name: 检查是否应运行（每天仅运行一次，允许延迟）
+        id: check_run
         run: |
           LA_HOUR=$(TZ='America/Los_Angeles' date +%H)
-          echo "la_hour=$LA_HOUR"
-          echo "la_hour=$LA_HOUR" >> $GITHUB_OUTPUT
+          TODAY=$(TZ='America/Los_Angeles' date +%Y-%m-%d)
+          echo "la_hour=$LA_HOUR, today=$TODAY"
+
+          # 恢复 gh-pages 以检查今天是否已生成过报告
+          git fetch origin gh-pages --depth=1 2>/dev/null || true
+          LAST_RUN=""
+          if git rev-parse origin/gh-pages >/dev/null 2>&1; then
+            LAST_RUN=$(git show origin/gh-pages:last_run_date.txt 2>/dev/null || echo "")
+          fi
+          echo "last_run_date=$LAST_RUN"
+
+          if [ "$LAST_RUN" = "$TODAY" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            echo "should_run=false" >> $GITHUB_OUTPUT
+            echo "今日报告已生成（$TODAY），跳过"
+          elif [ "$LA_HOUR" -ge 5 ] && [ "$LA_HOUR" -le 11 ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "should_run=true" >> $GITHUB_OUTPUT
+            echo "开始生成报告（LA时间 ${LA_HOUR}点）"
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+            echo "非运行时间窗口（LA时间 ${LA_HOUR}点），跳过"
+          fi
 
       - name: 恢复历史数据（报告 + 去重记录）
-        if: steps.check_time.outputs.la_hour == '06' || github.event_name == 'workflow_dispatch'
+        if: steps.check_run.outputs.should_run == 'true'
         run: |
           mkdir -p output
-          git fetch origin gh-pages --depth=1 2>/dev/null || true
           if git rev-parse origin/gh-pages >/dev/null 2>&1; then
             git archive origin/gh-pages | tar -x --wildcards 'report_*.html' -C output/ 2>/dev/null || true
             git show origin/gh-pages:seen_links.json > output/seen_links.json 2>/dev/null || true
@@ -51,16 +69,17 @@ jobs:
           fi
 
       - name: 生成报告并发送邮件
-        if: steps.check_time.outputs.la_hour == '06' || github.event_name == 'workflow_dispatch'
+        if: steps.check_run.outputs.should_run == 'true'
         env:
           GMAIL_SENDER:     ${{ secrets.GMAIL_SENDER }}
           GMAIL_PASSWORD:   ${{ secrets.GMAIL_PASSWORD }}
           GMAIL_RECIPIENTS: ${{ secrets.GMAIL_RECIPIENTS }}
-          SKIP_EMAIL:       "true"
-        run: python main.py
+        run: |
+          python main.py
+          TZ='America/Los_Angeles' date +%Y-%m-%d > output/last_run_date.txt
 
       - name: 部署到 GitHub Pages
-        if: steps.check_time.outputs.la_hour == '06' || github.event_name == 'workflow_dispatch'
+        if: steps.check_run.outputs.should_run == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
