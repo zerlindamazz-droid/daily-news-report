@@ -220,13 +220,26 @@ def run():
         logger.error(f"HTML 生成失败: {e}\n{traceback.format_exc()}")
         return False
 
-    # ── 转换 PDF ───────────────────────────────────────────────────
+    # ── 转换 PDF（去除 base64 图片以缩小体积，避免超出 Gmail 25MB 限制）──
     pdf_ok = False
     try:
-        html_to_pdf(html_path, pdf_path)
+        import re as _re
+        slim_html = html_path.read_text(encoding='utf-8')
+        # 将 base64 内嵌图片替换为空（图表在网站上可见，邮件 PDF 不含图表）
+        slim_html = _re.sub(
+            r'<img\s+src="data:image/[^"]+"\s*[^>]*>',
+            '<p style="color:#888;font-size:12px;text-align:center;">[图表请在网站查看]</p>',
+            slim_html,
+        )
+        slim_path = html_path.parent / f'_slim_{html_path.name}'
+        slim_path.write_text(slim_html, encoding='utf-8')
+        html_to_pdf(slim_path, pdf_path)
+        slim_path.unlink(missing_ok=True)
+        pdf_size_kb = pdf_path.stat().st_size // 1024
+        logger.info(f"PDF 生成完成，大小 {pdf_size_kb} KB")
         pdf_ok = True
     except Exception as e:
-        logger.error(f"PDF 转换失败（需要 playwright install chromium）: {e}")
+        logger.error(f"PDF 转换失败: {e}")
         logger.info("将直接发送不含 PDF 附件的邮件")
 
     # ── 生成 index.html = 今日报告 + 历史面板 ────────────────────────
@@ -278,7 +291,7 @@ def run():
             )
         except Exception as e:
             logger.error(f"邮件发送失败: {e}\n{traceback.format_exc()}")
-            return False
+            # 邮件失败不中断流程，报告已生成并将正常部署
 
     logger.info("全部完成！")
     logger.info("=" * 60)
