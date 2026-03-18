@@ -152,13 +152,19 @@ def run():
         logger.info(f"去重完成：过滤 {total_before - total_after} 条已出现过的新闻，剩余 {total_after} 条")
 
         # 每来源最多保留2条，保证来源多样性
-        MAX_PER_SOURCE = 2
+        # crypto 板块例外：PA News 最多保留4条，其余来源最多1条
         for cat in news_data:
             source_count: dict = {}
             diverse = []
             for a in news_data[cat]:
                 src = a.get('source', '')
-                if source_count.get(src, 0) < MAX_PER_SOURCE:
+                if cat == 'crypto' and src == 'PA News':
+                    limit_src = 4
+                elif cat == 'crypto':
+                    limit_src = 1
+                else:
+                    limit_src = 2
+                if source_count.get(src, 0) < limit_src:
                     diverse.append(a)
                     source_count[src] = source_count.get(src, 0) + 1
             news_data[cat] = diverse
