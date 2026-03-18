@@ -2,10 +2,9 @@ name: 每日全球要闻快报
 
 on:
   schedule:
-    - cron: '30 12 * * *'   # 5:30 AM PDT (UTC-7) 提前触发，防止延迟
-    - cron: '0 13 * * *'    # 6:00 AM PDT (UTC-7) 目标时间
-    - cron: '30 13 * * *'   # 6:30 AM PDT / 5:30 AM PST 延迟兜底
-    - cron: '0 14 * * *'    # 7:00 AM PDT / 6:00 AM PST (冬令时)
+    - cron: '0 10 * * *'    # 3:00 AM PDT (UTC-7) 提前3小时触发，确保6点前就绪
+    - cron: '0 11 * * *'    # 4:00 AM PDT (UTC-7) / 3:00 AM PST 兜底
+    - cron: '0 14 * * *'    # 6:00 AM PST (UTC-8, 冬令时兜底)
   workflow_dispatch:
 
 permissions:
@@ -52,7 +51,7 @@ jobs:
           if [ "$LAST_RUN" = "$TODAY" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
             echo "should_run=false" >> $GITHUB_OUTPUT
             echo "今日报告已生成（$TODAY），跳过"
-          elif [ "$LA_HOUR" -ge 5 ] && [ "$LA_HOUR" -le 8 ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          elif [ "$LA_HOUR" -ge 2 ] && [ "$LA_HOUR" -le 8 ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "should_run=true" >> $GITHUB_OUTPUT
             echo "开始生成报告（LA时间 ${LA_HOUR}点）"
           else
