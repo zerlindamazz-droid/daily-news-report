@@ -33,12 +33,12 @@ RSS_SOURCES = {
     ],
 
     'ai': [
-        {'name': 'MIT技术评论','name_en': 'MIT Tech Review', 'lang': 'en', 'url': 'https://www.technologyreview.com/feed/'},
-        {'name': 'TechCrunch', 'name_en': 'TechCrunch',     'lang': 'en', 'url': 'https://techcrunch.com/feed/'},
-        {'name': 'Engadget',   'name_en': 'Engadget',        'lang': 'en', 'url': 'https://www.engadget.com/rss.xml'},
-        {'name': 'Ars Technica','name_en':'Ars Technica',    'lang': 'en', 'url': 'https://feeds.arstechnica.com/arstechnica/technology-lab'},
-        {'name': 'The Verge',  'name_en': 'The Verge',       'lang': 'en', 'url': 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml'},
-        {'name': 'VentureBeat','name_en': 'VentureBeat',     'lang': 'en', 'url': 'https://venturebeat.com/category/ai/feed/'},
+        {'name': 'MIT技术评论', 'name_en': 'MIT Tech Review',  'lang': 'en', 'url': 'https://www.technologyreview.com/feed/'},
+        {'name': 'Ars Technica', 'name_en': 'Ars Technica',    'lang': 'en', 'url': 'https://feeds.arstechnica.com/arstechnica/technology-lab'},
+        {'name': 'The Verge',   'name_en': 'The Verge',        'lang': 'en', 'url': 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml'},
+        {'name': 'IEEE Spectrum','name_en': 'IEEE Spectrum',   'lang': 'en', 'url': 'https://spectrum.ieee.org/feeds/topic/artificial-intelligence.rss'},
+        {'name': 'TechCrunch',  'name_en': 'TechCrunch',      'lang': 'en', 'url': 'https://techcrunch.com/feed/'},
+        {'name': 'VentureBeat', 'name_en': 'VentureBeat',     'lang': 'en', 'url': 'https://venturebeat.com/category/ai/feed/'},
     ],
 
     # 加密货币：PA News 优先（中文），其次英文权威媒体
@@ -52,11 +52,10 @@ RSS_SOURCES = {
     ],
 
     'economy': [
-        {'name': 'CBS财经',    'name_en': 'CBS MoneyWatch',  'lang': 'en', 'url': 'https://www.cbsnews.com/latest/rss/moneywatch'},
-        {'name': 'CNBC',       'name_en': 'CNBC',            'lang': 'en', 'url': 'https://www.cnbc.com/id/100003114/device/rss/rss.html'},
-        {'name': 'Forbes商业', 'name_en': 'Forbes Business', 'lang': 'en', 'url': 'https://www.forbes.com/business/feed/'},
-        {'name': 'Yahoo财经',  'name_en': 'Yahoo Finance',   'lang': 'en', 'url': 'https://finance.yahoo.com/news/rssindex'},
-        {'name': 'MarketWatch','name_en': 'MarketWatch',     'lang': 'en', 'url': 'https://feeds.content.dowjones.io/public/rss/mw_topstories'},
+        {'name': 'CNBC',       'name_en': 'CNBC',              'lang': 'en', 'url': 'https://www.cnbc.com/id/100003114/device/rss/rss.html'},
+        {'name': 'MarketWatch','name_en': 'MarketWatch',       'lang': 'en', 'url': 'https://feeds.content.dowjones.io/public/rss/mw_topstories'},
+        {'name': 'NPR经济',    'name_en': 'NPR Economy',       'lang': 'en', 'url': 'https://feeds.npr.org/1017/rss.xml'},
+        {'name': '卫报经济',   'name_en': 'The Guardian Economy','lang': 'en', 'url': 'https://www.theguardian.com/business/economics/rss'},
     ],
 }
 
@@ -146,7 +145,7 @@ DISPLAY_LIMITS = {
     'world':   6,
     'ai':      5,
     'crypto':  5,
-    'economy': 8,
+    'economy': 4,
 }
 
 
