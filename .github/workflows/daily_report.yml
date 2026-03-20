@@ -2,8 +2,8 @@ name: 每日全球要闻快报
 
 on:
   schedule:
-    - cron: '0 10 * * *'    # 3:00 AM PDT (UTC-7) 提前3小时触发，确保6点前就绪
-    - cron: '0 11 * * *'    # 4:00 AM PDT (UTC-7) / 3:00 AM PST 兜底
+    - cron: '0 10 * * *'    # 3:00 AM PDT (UTC-7) 提前触发，确保6点前就绪
+    - cron: '0 11 * * *'    # 4:00 AM PDT / 3:00 AM PST 兜底
     - cron: '0 14 * * *'    # 6:00 AM PST (UTC-8, 冬令时兜底)
   workflow_dispatch:
 
@@ -33,14 +33,13 @@ jobs:
       - name: 安装 Playwright Chromium
         run: playwright install chromium --with-deps
 
-      - name: 检查是否应运行（每天仅运行一次，允许延迟）
+      - name: 检查运行条件
         id: check_run
         run: |
           LA_HOUR=$(TZ='America/Los_Angeles' date +%H)
           TODAY=$(TZ='America/Los_Angeles' date +%Y-%m-%d)
           echo "la_hour=$LA_HOUR, today=$TODAY"
 
-          # 恢复 gh-pages 以检查今天是否已生成过报告
           git fetch origin gh-pages --depth=1 2>/dev/null || true
           LAST_RUN=""
           if git rev-parse origin/gh-pages >/dev/null 2>&1; then
@@ -48,12 +47,18 @@ jobs:
           fi
           echo "last_run_date=$LAST_RUN"
 
-          if [ "$LAST_RUN" = "$TODAY" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+          # 今天已发送过 → 无论何种触发方式都跳过邮件
+          if [ "$LAST_RUN" = "$TODAY" ]; then
             echo "should_run=false" >> $GITHUB_OUTPUT
             echo "今日报告已生成（$TODAY），跳过"
-          elif [ "$LA_HOUR" -ge 2 ] && [ "$LA_HOUR" -le 8 ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # 手动触发：直接运行，不限时间窗口
             echo "should_run=true" >> $GITHUB_OUTPUT
-            echo "开始生成报告（LA时间 ${LA_HOUR}点）"
+            echo "手动触发，开始生成报告"
+          elif [ "$LA_HOUR" -ge 2 ] && [ "$LA_HOUR" -le 8 ]; then
+            # 定时触发：仅在 2-8 点时间窗口内执行
+            echo "should_run=true" >> $GITHUB_OUTPUT
+            echo "定时触发，LA时间 ${LA_HOUR}点，开始生成报告"
           else
             echo "should_run=false" >> $GITHUB_OUTPUT
             echo "非运行时间窗口（LA时间 ${LA_HOUR}点），跳过"
