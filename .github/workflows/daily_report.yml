@@ -6,6 +6,11 @@ on:
     - cron: '0 11 * * *'    # 4:00 AM PDT / 3:00 AM PST 兜底
     - cron: '0 14 * * *'    # 6:00 AM PST (UTC-8, 冬令时兜底)
   workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force run even if already ran today (true/false)'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -47,8 +52,9 @@ jobs:
           fi
           echo "last_run_date=$LAST_RUN"
 
-          # 今天已发送过 → 无论何种触发方式都跳过邮件
-          if [ "$LAST_RUN" = "$TODAY" ]; then
+          # 今天已发送过 → 跳过（手动强制触发除外）
+          FORCE="${{ github.event.inputs.force }}"
+          if [ "$LAST_RUN" = "$TODAY" ] && [ "$FORCE" != "true" ]; then
             echo "should_run=false" >> $GITHUB_OUTPUT
             echo "今日报告已生成（$TODAY），跳过"
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
