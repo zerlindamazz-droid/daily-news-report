@@ -293,7 +293,7 @@ def run():
                 email_cfg  = email_cfg,
                 date_str   = date_str,
                 la_time    = la_time,
-                pdf_path   = pdf_path if pdf_ok else None,
+                news_data  = news_data,
             )
         except Exception as e:
             logger.error(f"邮件发送失败: {e}\n{traceback.format_exc()}")
