@@ -1,12 +1,14 @@
 """
-邮件发送模块 — 纯 HTML 正文，无附件，永不超出 Gmail 大小限制
-内容：各板块新闻标题 + 摘要 + 网站链接
+邮件发送模块 — HTML 正文（含新闻摘要）+ PDF 附件
+PDF 为去除 base64 图表的精简版，体积 ~10-15 MB，不超出 Gmail 限制
 """
 
+import os
 import smtplib
 import logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 
 logger = logging.getLogger(__name__)
 
@@ -46,14 +48,14 @@ def _article_html(article):
 
 def send_report_email(email_cfg, date_str, la_time, news_data=None, pdf_path=None):
     """
-    发送每日报告邮件（纯 HTML 正文，无附件）
+    发送每日报告邮件（HTML 正文 + PDF 附件）
 
     参数:
         email_cfg : config["email"] 字典
         date_str  : 中文日期字符串
         la_time   : 洛杉矶时间字符串
-        news_data : 各板块新闻 dict，格式同 main.py 中的 news_data
-        pdf_path  : 已弃用，保留参数兼容性
+        news_data : 各板块新闻 dict
+        pdf_path  : 精简版 PDF 路径（已去除 base64 图表，~10-15 MB）
     """
     sender   = email_cfg['sender']
     password = email_cfg['password']
@@ -120,11 +122,27 @@ def send_report_email(email_cfg, date_str, la_time, news_data=None, pdf_path=Non
 </table>
 </body></html>'''
 
-    msg = MIMEMultipart('alternative')
+    msg = MIMEMultipart('mixed')
     msg['From']    = sender
     msg['To']      = ', '.join(recipients)
     msg['Subject'] = subject
-    msg.attach(MIMEText(body_html, 'html', 'utf-8'))
+
+    # HTML 正文
+    alt = MIMEMultipart('alternative')
+    alt.attach(MIMEText(body_html, 'html', 'utf-8'))
+    msg.attach(alt)
+
+    # PDF 附件（精简版，已去除 base64 图表）
+    if pdf_path and os.path.exists(pdf_path):
+        with open(pdf_path, 'rb') as f:
+            pdf_data = f.read()
+        attachment = MIMEApplication(pdf_data, _subtype='pdf')
+        filename = f'daily_report_{date_str}.pdf'
+        attachment.add_header('Content-Disposition', 'attachment', filename=filename)
+        msg.attach(attachment)
+        logger.info(f"PDF 附件: {filename} ({len(pdf_data)//1024} KB)")
+    else:
+        logger.warning("未找到 PDF，仅发送 HTML 正文")
 
     logger.info(f"正在连接 {host}:{port} …")
     with smtplib.SMTP(host, port, timeout=30) as smtp:

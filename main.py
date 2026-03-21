@@ -294,6 +294,7 @@ def run():
                 date_str   = date_str,
                 la_time    = la_time,
                 news_data  = news_data,
+                pdf_path   = pdf_path if pdf_ok else None,
             )
         except Exception as e:
             logger.error(f"邮件发送失败: {e}\n{traceback.format_exc()}")
