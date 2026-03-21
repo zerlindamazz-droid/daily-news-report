@@ -243,25 +243,28 @@ def run():
         slim_path.unlink(missing_ok=True)
         pdf_size_kb = pdf_path.stat().st_size // 1024
         logger.info(f"PDF 生成完成，大小 {pdf_size_kb} KB（压缩前）")
+        pdf_ok = True  # PDF 已生成，即使后续压缩失败也能发送
 
-        # 用 Ghostscript 压缩 PDF，减小体积（主要是 CJK 字体内嵌导致体积大）
-        import subprocess as _sp
-        compressed = pdf_path.parent / f'_compressed_{pdf_path.name}'
-        gs_result = _sp.run([
-            'gs', '-dBATCH', '-dNOPAUSE', '-q',
-            '-sDEVICE=pdfwrite',
-            '-dCompatibilityLevel=1.4',
-            '-dPDFSETTINGS=/ebook',   # 150 DPI，适合屏幕阅读，压缩率高
-            f'-sOutputFile={compressed}',
-            str(pdf_path),
-        ], capture_output=True)
-        if gs_result.returncode == 0 and compressed.exists():
-            compressed.replace(pdf_path)
-            pdf_size_kb = pdf_path.stat().st_size // 1024
-            logger.info(f"PDF 压缩后大小 {pdf_size_kb} KB")
-        else:
-            logger.warning(f"Ghostscript 压缩失败，使用原始 PDF: {gs_result.stderr.decode()}")
-        pdf_ok = True
+        # 用 Ghostscript 压缩 PDF（安装后可将 ~20MB 压缩到 ~5-8MB）
+        try:
+            import subprocess as _sp
+            compressed = pdf_path.parent / f'_compressed_{pdf_path.name}'
+            gs_result = _sp.run([
+                'gs', '-dBATCH', '-dNOPAUSE', '-q',
+                '-sDEVICE=pdfwrite',
+                '-dCompatibilityLevel=1.4',
+                '-dPDFSETTINGS=/ebook',
+                f'-sOutputFile={compressed}',
+                str(pdf_path),
+            ], capture_output=True)
+            if gs_result.returncode == 0 and compressed.exists():
+                compressed.replace(pdf_path)
+                pdf_size_kb = pdf_path.stat().st_size // 1024
+                logger.info(f"PDF 压缩后大小 {pdf_size_kb} KB")
+            else:
+                logger.warning(f"Ghostscript 压缩失败，使用原始 PDF: {gs_result.stderr.decode()}")
+        except Exception as gs_err:
+            logger.warning(f"Ghostscript 不可用，使用原始 PDF: {gs_err}")
     except Exception as e:
         logger.error(f"PDF 转换失败: {e}")
         logger.info("将直接发送不含 PDF 附件的邮件")
