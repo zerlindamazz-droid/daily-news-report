@@ -1,10 +1,6 @@
 name: 每日全球要闻快报
 
 on:
-  schedule:
-    - cron: '0 10 * * *'    # 3:00 AM PDT (UTC-7) 提前触发，确保6点前就绪
-    - cron: '0 11 * * *'    # 4:00 AM PDT / 3:00 AM PST 兜底
-    - cron: '0 14 * * *'    # 6:00 AM PST (UTC-8, 冬令时兜底)
   workflow_dispatch:
     inputs:
       force:
