@@ -1,6 +1,10 @@
 name: 每日全球要闻快报
 
 on:
+  schedule:
+    - cron: '0 10 * * *'    # 3:00 AM PDT (UTC-7)
+    - cron: '0 11 * * *'    # 4:00 AM PDT 兜底
+    - cron: '0 14 * * *'    # 6:00 AM PST (UTC-8, 冬令时)
   workflow_dispatch:
     inputs:
       force:
@@ -76,12 +80,10 @@ jobs:
             echo "seen_links.json lines: $(wc -l < output/seen_links.json 2>/dev/null || echo 0)"
           fi
 
-      - name: 生成报告并发送邮件
+      - name: 生成报告（不发送邮件）
         if: steps.check_run.outputs.should_run == 'true'
         env:
-          GMAIL_SENDER:     ${{ secrets.GMAIL_SENDER }}
-          GMAIL_PASSWORD:   ${{ secrets.GMAIL_PASSWORD }}
-          GMAIL_RECIPIENTS: ${{ secrets.GMAIL_RECIPIENTS }}
+          SKIP_EMAIL: "true"
         run: |
           python main.py
           TZ='America/Los_Angeles' date +%Y-%m-%d > output/last_run_date.txt
